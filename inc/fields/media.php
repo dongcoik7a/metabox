@@ -63,15 +63,9 @@ class RWMB_Media_Field extends RWMB_Field
 		$meta                       = (array) $meta;
 		$meta                       = implode( ',', $meta );
 		$attributes                 = $load_test_attr = self::get_attributes( $field, $meta );
-		$load_test_attr['disabled'] = false;
-		$load_test_attr['class']    = 'rwmb-load-test';
-		$load_test_attr['value']    = - 1;
-		$load_test_attr['name']     = $field['field_name'];
-
 
 		$html = sprintf(
 			'<input %s>
-
 			<div class="rwmb-media-view" data-mime-type="%s" data-max-files="%s" data-force-delete="%s" data-show-status="%s"></div>',
 			self::render_attributes( $attributes ),
 			$field['mime_type'],
@@ -118,8 +112,8 @@ class RWMB_Media_Field extends RWMB_Field
 	{
 		$attributes         = parent::get_attributes( $field, $value );
 		$attributes['type'] = 'hidden';
-		$attributes['name'] .= ! $field['clone'] && $field['multiple'] ? '[]' : '';
-		$attributes['disabled'] = true;
+		$attributes['name'] = preg_replace( '/\[\]$/', '', $attributes['name'] );
+		//$attributes['disabled'] = true;
 		$attributes['id']       = false;
 		$attributes['value']    = $value;
 
@@ -173,17 +167,14 @@ class RWMB_Media_Field extends RWMB_Field
 	{
 		if ( $field['clone'] )
 		{
-			foreach ( (array) $new as $n )
+			foreach ( (array) $new as $i => $n )
 			{
-				if ( - 1 === intval( $n ) )
-					return $old;
+				$new[ $i ] = array_map( 'intval', is_string( $n ) ? explode( ',', $n ) : (array) $n );
 			}
+			return $new;
 		}
 
-		if ( - 1 === intval( $new ) )
-			return $old;
-
-		return $new;
+		return array_map( 'intval', is_string( $new ) ? explode( ',', $new ) : (array) $new );
 	}
 
 	/**

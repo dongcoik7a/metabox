@@ -201,13 +201,16 @@ jQuery( function ( $ )
 			this.$input = $( options.input );
 			this.controller = new Controller( _.extend(
 				{
-					fieldName: this.$input.attr( 'name' ),
+					fieldName: this.$input.attr( 'name' ) + '[]',
 					ids: this.$input.val().split( ',' )
 				},
 				this.$el.data()
 			) );
 
-			this.$input.val( '' );
+			this.listenTo( this.controller, 'ready', function()
+			{
+				this.$input.val( '' );
+			} );
 
 			// Create views
 			this.createList();
