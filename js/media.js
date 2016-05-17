@@ -73,7 +73,10 @@ jQuery( function ( $ )
 					perPage: this.get( 'maxFiles' ) || -1
 				} );
 				// Get more then trigger ready
-				this.get( 'items' ).more();
+				this.get( 'items' ).more().done( function()
+				{
+					that.trigger( 'ready' );
+				});
 			}
 			else
 			{
@@ -163,13 +166,13 @@ jQuery( function ( $ )
 
 				// Record the initial `index` of the dragged model.
 				start: function( event, ui ) {
-					ui.item.data('sortableIndexStart', ui.item.index());
+					ui.item.data( 'sortableIndexStart', ui.item.index()) ;
 				},
 
 				// Update the model's index in the collection.
 				// Do so silently, as the view is already accurate.
 				update: function( event, ui ) {
-					var model = collection.at( ui.item.data('sortableIndexStart') );
+					var model = collection.at( ui.item.data( 'sortableIndexStart' ) );
 
 					// Silently shift the model to its new index.
 					collection.remove( model, {
@@ -198,7 +201,7 @@ jQuery( function ( $ )
 			this.$input = $( options.input );
 			this.controller = new Controller( _.extend(
 				{
-					fieldName: this.$input.attr( 'name' ) ,
+					fieldName: this.$input.attr( 'name' ),
 					ids: this.$input.val().split( ',' )
 				},
 				this.$el.data()
