@@ -15,12 +15,13 @@ jQuery( function ( $ )
 	Controller = models.Controller = Backbone.Model.extend( {
 		//Default options
 		defaults: {
-			maxFiles:     0,
-			ids:          [],
-			mimeType:     '',
-			forceDelete:  false,
-			showStatus:   true,
-			length:       0
+			maxFiles:    0,
+			ids:         [],
+			mimeType:    '',
+			forceDelete: false,
+			showStatus:  true,
+			length:      0,
+			full:        false
 		},
 
 		//Initialize Controller model
@@ -35,8 +36,7 @@ jQuery( function ( $ )
 
 			this.listenTo( this.get( 'items' ), 'add remove reset', function()
 			{
-				var items = this.get( 'items' ),
-					length = items.length,
+				var length = this.get( 'items' ).length,
 					max = this.get( 'maxFiles' );
 
 				this.set( 'length', length );
@@ -55,7 +55,6 @@ jQuery( function ( $ )
 				}
 			} );
 		},
-
 
 		// Method to load media
 		load: function ()
@@ -78,11 +77,7 @@ jQuery( function ( $ )
 					that.trigger( 'ready' );
 				});
 			}
-			else
-			{
-				// No initial media so ready
-				that.trigger( 'ready' );
-			}
+			return this;
 		},
 
 		// Method to remove media items
@@ -91,6 +86,8 @@ jQuery( function ( $ )
 			this.get( 'items' ).remove( item );
 			if( this.get( 'forceDelete' ) )
 				item.destroy();
+
+			return this;
 		},
 
 		// Method to add items
@@ -106,6 +103,7 @@ jQuery( function ( $ )
 				items = _.first( items, left );
 			}
 			this.get( 'items' ).add( items );
+			return this;
 		}
 	} );
 
@@ -126,6 +124,7 @@ jQuery( function ( $ )
 			} );
 
 			this.$el.append( view.el );
+			return this;
 		},
 
 		//Remove item view
@@ -136,6 +135,7 @@ jQuery( function ( $ )
 				this._views[item.cid].remove();
 				delete this._views[item.cid];
 			}
+			return this;
 		},
 
 		initialize: function ( options )
@@ -154,6 +154,7 @@ jQuery( function ( $ )
 		{
 			this.listenTo( this.controller.get( 'items' ), 'add', this.addItemView );
 			this.listenTo( this.controller.get( 'items' ), 'remove', this.removeItemView );
+			return this;
 		},
 
 		initSortable: function ()
@@ -187,6 +188,7 @@ jQuery( function ( $ )
 					collection.trigger( 'reset', collection );
 				}
 			} );
+			return this;
 		}
 	} );
 
@@ -234,18 +236,21 @@ jQuery( function ( $ )
 		createList: function ()
 		{
 			this.list = new MediaList( { controller: this.controller } );
+			return this;
 		},
 
 		// Creates button that adds media
 		createAddButton: function ()
 		{
 			this.addButton = new MediaButton( { controller: this.controller } );
+			return this;
 		},
 
 		// Creates status
 		createStatus: function ()
 		{
 			this.status = new MediaStatus( { controller: this.controller } );
+			return this;
 		},
 
 		// Render field and adds sub fields
@@ -257,6 +262,7 @@ jQuery( function ( $ )
 				this.addButton.el,
 				this.status.el
 			);
+			return this;
 		}
 	} );
 
@@ -289,6 +295,7 @@ jQuery( function ( $ )
 		{
 			var attrs = _.clone( this.controller.attributes );
 			this.$el.html( this.template( attrs ) );
+			return this;
 		}
 	} );
 
