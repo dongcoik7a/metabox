@@ -72,10 +72,7 @@ jQuery( function ( $ )
 					perPage: this.get( 'maxFiles' ) || -1
 				} );
 				// Get more then trigger ready
-				this.get( 'items' ).more().done( function()
-				{
-					that.trigger( 'ready' );
-				});
+				this.get( 'items' ).more();
 			}
 			return this;
 		},
@@ -208,11 +205,6 @@ jQuery( function ( $ )
 				},
 				this.$el.data()
 			) );
-
-			this.listenTo( this.controller, 'ready', function()
-			{
-				this.$input.val( '' );
-			} );
 
 			// Create views
 			this.createList();
