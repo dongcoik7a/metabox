@@ -20,7 +20,8 @@ jQuery( function ( $ )
 			mimeType:     '',
 			forceDelete:  false,
 			showStatus:   true,
-			length:       0
+			length:       0,
+			full:         false
 		},
 
 		//Initialize Controller model
@@ -35,8 +36,7 @@ jQuery( function ( $ )
 
 			this.listenTo( this.get( 'items' ), 'add remove reset', function()
 			{
-				var items = this.get( 'items' ),
-					length = items.length,
+				var length = this.get( 'items' ).length,
 					max = this.get( 'maxFiles' );
 
 				this.set( 'length', length );
@@ -375,7 +375,7 @@ jQuery( function ( $ )
 				}
 
 				// Trigger the media frame to open the correct item
-				this._frame = wp.media( {
+				this._frame = new EditMedia( {
 					frame:       'edit-attachments',
 					controller:
 					{
@@ -403,6 +403,49 @@ jQuery( function ( $ )
 			return this;
 		}
 	} );
+
+	/***
+	 * MediaDetails
+	 * Custom version of TwoColumn view to prevent all video and audio from being unset
+	 */
+	var	MediaDetails = wp.media.view.Attachment.Details.TwoColumn.extend( {
+		render: function() {
+			wp.media.view.Attachment.Details.prototype.render.apply( this, arguments );
+
+			this.$( 'audio, video' ).each( function (i, elem) {
+				var el = wp.media.view.MediaDetails.prepareSrc( elem );
+				new window.MediaElementPlayer( el, wp.media.mixin.mejsSettings );
+			} );
+		}
+	} );
+
+	/***
+	 * EditMedia
+	 * Custom version of EditAttachments frame to prevent all video and audio from being unset
+	 */
+	var	EditMedia =  wp.media.view.MediaFrame.EditAttachments.extend( {
+			/**
+			 * Content region rendering callback for the `edit-metadata` mode.
+			 *
+			 * @param {Object} contentRegion Basic object with a `view` property, which
+			 *                               should be set with the proper region view.
+			 */
+			editMetadataMode: function( contentRegion ) {
+				contentRegion.view = new MediaDetails({
+					controller: this,
+					model:      this.model
+				});
+
+				/**
+				 * Attach a subview to display fields added via the
+				 * `attachment_fields_to_edit` filter.
+				 */
+				contentRegion.view.views.set( '.attachment-compat', new wp.media.view.AttachmentCompat({
+					controller: this,
+					model:      this.model
+				}) );
+			},
+		} );
 
 	/**
 	 * Initialize media fields
