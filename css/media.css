@@ -44,6 +44,7 @@
 }
 .rwmb-media-info {
 	margin-left: 65px;
+	padding: 5px;
 }
 .rwmb-media-info a {
 	text-decoration: none;
@@ -57,6 +58,11 @@
 	font-size: 11px;
 	color: inherit;
 }
+
+.rwmb-remove-media:hover {
+	color: #f00;
+}
+
 .rwmb-edit-media .dashicons,
 .rwmb-remove-media .dashicons {
 	font-size: 12px;
