@@ -45,28 +45,12 @@ class RWMB_Checkbox_Field extends RWMB_Input_Field
 	 */
 	public static function end_html( $meta, $field )
 	{
-		$button = $field['clone'] ? call_user_func( array( RW_Meta_Box::get_class_name( $field ), 'add_clone_button' ), $field ) : '';
+		$button = $field['clone'] ? self::add_clone_button( $field ) : '';
 
 		// Closes the container
 		$html = "{$button}</div>";
 
 		return $html;
-	}
-
-	/**
-	 * Get the attributes for a field.
-	 *
-	 * @param array $field
-	 * @param mixed $value
-	 * @return array
-	 */
-	public static function get_attributes( $field, $value = null )
-	{
-		$attributes         = parent::get_attributes( $field, $value );
-		$attributes['type'] = 'checkbox';
-		$attributes['list'] = false;
-
-		return $attributes;
 	}
 
 	/**
