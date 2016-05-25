@@ -410,15 +410,11 @@ jQuery( function ( $ )
 	 */
 	var	MediaDetails = wp.media.view.Attachment.Details.TwoColumn.extend( {
 		render: function() {
-			var that = this;
 			wp.media.view.Attachment.Details.prototype.render.apply( this, arguments );
-			this.players = this.players || [];
-
-			wp.media.mixin.unsetPlayers.call( this );
 
 			this.$( 'audio, video' ).each( function (i, elem) {
 				var el = wp.media.view.MediaDetails.prepareSrc( elem );
-				that.players.push( new window.MediaElementPlayer( el, wp.media.mixin.mejsSettings ) );
+				new window.MediaElementPlayer( el, wp.media.mixin.mejsSettings );
 			} );
 		}
 	} );
