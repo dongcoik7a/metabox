@@ -1,6 +1,6 @@
 <?php
 /**
- * Image advanced field class which users WordPress media popup to upload and select images.
+ * Video class which users WordPress media popup to upload and select images.
  */
 class RWMB_Video_Field extends RWMB_Media_Field
 {
@@ -14,18 +14,6 @@ class RWMB_Video_Field extends RWMB_Media_Field
 		parent::admin_enqueue_scripts();
 		wp_enqueue_style( 'rwmb-video', RWMB_CSS_URL . 'video.css', array( 'rwmb-media' ), RWMB_VER );
 		wp_enqueue_script( 'rwmb-video', RWMB_JS_URL . 'video.js', array( 'rwmb-media' ), RWMB_VER, true );
-	}
-
-	/**
-	 * Add actions
-	 *
-	 * @return void
-	 */
-	static function add_actions()
-	{
-		parent::add_actions();
-		// Print attachment templates
-		add_action( 'print_media_templates', array( __CLASS__, 'print_templates' ) );
 	}
 
 	/**
@@ -85,6 +73,7 @@ class RWMB_Video_Field extends RWMB_Media_Field
 	 */
 	static function print_templates()
 	{
+		parent::print_templates();
 		require_once( RWMB_INC_DIR . 'templates/video.php' );
 	}
 }
