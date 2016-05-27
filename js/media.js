@@ -376,7 +376,7 @@ jQuery( function ( $ )
 				}
 
 				// Trigger the media frame to open the correct item
-				this._frame = wp.media( {
+				this._frame = new EditMedia( {
 					frame     : 'edit-attachments',
 					controller: {
 						// Needed to trick Edit modal to think there is a gridRouter
@@ -407,6 +407,57 @@ jQuery( function ( $ )
 			return this;
 		}
 	} );
+
+	/**
+	 * Extend media frames to make things work right
+	 */
+
+	 /***
+		* MediaDetails
+		* Custom version of TwoColumn view to prevent all video and audio from being unset
+		*/
+	 var	MediaDetails = wp.media.view.Attachment.Details.TwoColumn.extend( {
+		 render: function() {
+			 var that = this;
+			 wp.media.view.Attachment.Details.prototype.render.apply( this, arguments );
+			 this.players = this.players || [];
+
+			 wp.media.mixin.unsetPlayers.call( this );
+
+			 this.$( 'audio, video' ).each( function (i, elem) {
+				 var el = wp.media.view.MediaDetails.prepareSrc( elem );
+				 that.players.push( new window.MediaElementPlayer( el, wp.media.mixin.mejsSettings ) );
+			 } );
+		 }
+	 } );
+
+	 /***
+		* EditMedia
+		* Custom version of EditAttachments frame to prevent all video and audio from being unset
+		*/
+	 var	EditMedia =  wp.media.view.MediaFrame.EditAttachments.extend( {
+			 /**
+				* Content region rendering callback for the `edit-metadata` mode.
+				*
+				* @param {Object} contentRegion Basic object with a `view` property, which
+				*                               should be set with the proper region view.
+				*/
+			 editMetadataMode: function( contentRegion ) {
+				 contentRegion.view = new MediaDetails({
+					 controller: this,
+					 model:      this.model
+				 });
+
+				 /**
+					* Attach a subview to display fields added via the
+					* `attachment_fields_to_edit` filter.
+					*/
+				 contentRegion.view.views.set( '.attachment-compat', new wp.media.view.AttachmentCompat({
+					 controller: this,
+					 model:      this.model
+				 }) );
+			 },
+		 } );
 
 	/**
 	 * Initialize media fields
