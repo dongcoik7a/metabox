@@ -22,7 +22,7 @@ jQuery( function ( $ )
 					{
 						var settings =  ! _.isUndefined( window._wpmejsSettings ) ? _.clone( _wpmejsSettings ) : {};
 						MediaItem.prototype.render.apply( this, arguments );
-						this.player = new MediaElementPlayer( this.$( 'video' ).get(0), settings ); 
+						this.player = new MediaElementPlayer( this.$( 'video' ).get(0), settings );
 					}
 				} )
 			} );

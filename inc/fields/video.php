@@ -14,6 +14,17 @@ class RWMB_Video_Field extends RWMB_Media_Field
 		parent::admin_enqueue_scripts();
 		wp_enqueue_style( 'rwmb-video', RWMB_CSS_URL . 'video.css', array( 'rwmb-media' ), RWMB_VER );
 		wp_enqueue_script( 'rwmb-video', RWMB_JS_URL . 'video.js', array( 'rwmb-media' ), RWMB_VER, true );
+		/**
+		 * Prevent loading localized string twice.
+		 * @link https://github.com/rilwis/meta-box/issues/850
+		 */
+		$wp_scripts = wp_scripts();
+		if ( ! $wp_scripts->get_data( 'rwmb-video', 'data' ) )
+		{
+			wp_localize_script( 'rwmb-video', 'i18nRwmbVideo', array(
+				'extensions' => wp_get_video_extensions(),
+			) );
+		}
 	}
 
 	/**

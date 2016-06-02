@@ -10,8 +10,8 @@
 
 .rwmb-video-item .rwmb-media-preview {
 	width: 100%;
-	background: #888888;
 	float: none;
+	background: #EEE;
 }
 
 .rwmb-video-item  .rwmb-media-preview:before {

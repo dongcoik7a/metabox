@@ -3,6 +3,7 @@
   <div class="rwmb-media-preview">
     <div class="rwmb-media-content">
       <div class="centered">
+				<# if( _.indexOf( i18nRwmbVideo.extensions, data.url.substr( data.url.lastIndexOf('.') + 1 ) ) > -1 ) { #>
 				<div class="rwmb-video-wrapper">
 					<video controls="controls" class="rwmb-video-element" preload="metadata"
 						<# if ( data.width ) { #>width="{{ data.width }}"<# } #>
@@ -11,6 +12,13 @@
 						<source type="{{ data.mime }}" src="{{ data.url }}"/>
 					</video>
 				</div>
+				<# } else { #>
+					<# if ( data.image && data.image.src && data.image.src !== data.icon ) { #>
+						<img src="{{ data.image.src }}" />
+					<# } else { #>
+						<img src="{{ data.icon }}" />
+					<# } #>
+				<# } #>
       </div>
     </div>
   </div>
