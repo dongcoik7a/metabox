@@ -56,18 +56,13 @@ abstract class RWMB_Key_Value_Field extends RWMB_Text_Field
 	}
 
 	/**
-	 * Show end HTML markup for fields
-	 * Do not show field description. Field description is shown before list of fields
-	 *
-	 * @param mixed $meta
+	 * Do not show field description.
 	 * @param array $field
 	 * @return string
 	 */
-	static function end_html( $meta, $field )
+	public static function element_description( $field )
 	{
-		$button = $field['clone'] ? self::add_clone_button( $field ) : '';
-		$html   = "$button</div>";
-		return $html;
+		return '';
 	}
 
 	/**

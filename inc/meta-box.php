@@ -49,8 +49,7 @@ class RW_Meta_Box
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue' ) );
 
 		// Add additional actions for fields
-		$fields = self::get_fields( $this->fields );
-		foreach ( $fields as $field )
+		foreach ( $this->fields as $field )
 		{
 			RWMB_Field::call( $field, 'add_actions' );
 		}
@@ -91,8 +90,7 @@ class RW_Meta_Box
 			wp_enqueue_style( 'rwmb-rtl', RWMB_CSS_URL . 'style-rtl.css', array(), RWMB_VER );
 
 		// Load clone script conditionally
-		$fields = self::get_fields( $this->fields );
-		foreach ( $fields as $field )
+		foreach ( $this->fields as $field )
 		{
 			if ( $field['clone'] )
 			{
@@ -102,7 +100,7 @@ class RW_Meta_Box
 		}
 
 		// Enqueue scripts and styles for fields
-		foreach ( $fields as $field )
+		foreach ( $this->fields as $field )
 		{
 			RWMB_Field::call( $field, 'admin_enqueue_scripts' );
 		}
@@ -116,24 +114,6 @@ class RW_Meta_Box
 		 * @param RW_Meta_Box $object Meta Box object
 		 */
 		do_action( 'rwmb_enqueue_scripts', $this );
-	}
-
-	/**
-	 * Get all fields of a meta box, recursively
-	 * @param array $fields
-	 * @return array
-	 */
-	public static function get_fields( $fields )
-	{
-		$all_fields = array();
-		foreach ( $fields as $field )
-		{
-			$all_fields[] = $field;
-			if ( isset( $field['fields'] ) )
-				$all_fields = array_merge( $all_fields, self::get_fields( $field['fields'] ) );
-		}
-
-		return $all_fields;
 	}
 
 	/**
@@ -233,7 +213,15 @@ class RW_Meta_Box
 			$new    = isset( $_POST[$field['id']] ) ? $_POST[$field['id']] : ( $single ? '' : array() );
 
 			// Allow field class change the value
-			$new = RWMB_Field::call( $field, 'value', $new, $old, $post_id );
+			if ( $field['clone'] )
+			{
+				$new = RWMB_Clone::value( $new, $old, $post_id, $field );
+			}
+			else
+			{
+				$new = RWMB_Field::call( $field, 'value', $new, $old, $post_id );
+				$new = RWMB_Field::filter( 'sanitize', $new, $field );
+			}
 			$new = RWMB_Field::filter( 'value', $new, $field, $old );
 
 			// Call defined method to save meta value, if there's no methods, call common one
@@ -287,15 +275,8 @@ class RW_Meta_Box
 			$meta_box['post_types'] = $meta_box['pages'];
 		}
 
-		// Allow to set 'post_types' param by string
-		if ( is_string( $meta_box['post_types'] ) )
-		{
-			$meta_box['post_types'] = array( $meta_box['post_types'] );
-		}
-
-		// Allow to add default values for meta box
-		$meta_box = apply_filters( 'rwmb_normalize_meta_box', $meta_box );
-		$meta_box = apply_filters( "rwmb_normalize_{$meta_box['id']}_meta_box", $meta_box );
+		// Make sure the post type is an array.
+		$meta_box['post_types'] = (array) $meta_box['post_types'];
 
 		return $meta_box;
 	}
@@ -311,9 +292,6 @@ class RW_Meta_Box
 		{
 			$field = RWMB_Field::call( 'normalize', $field );
 
-			if ( isset( $field['fields'] ) )
-				$field['fields'] = self::normalize_fields( $field['fields'] );
-
 			// Allow to add default values for fields
 			$field = apply_filters( 'rwmb_normalize_field', $field );
 			$field = apply_filters( "rwmb_normalize_{$field['type']}_field", $field );
@@ -323,16 +301,6 @@ class RW_Meta_Box
 		}
 
 		return $fields;
-	}
-
-	/**
-	 * Get field class name. Only for backward compatibility.
-	 * @param array $field Field array
-	 * @return string Field class name
-	 */
-	public static function get_class_name( $field )
-	{
-		return RWMB_Field::get_class_name( $field );
 	}
 
 	/**

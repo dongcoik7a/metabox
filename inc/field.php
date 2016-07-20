@@ -47,46 +47,7 @@ abstract class RWMB_Field
 		// Cloneable fields
 		if ( $field['clone'] )
 		{
-			$field_html = '';
-
-			/**
-			 * Note: $meta must contain value so that the foreach loop runs!
-			 * @see meta()
-			 */
-			foreach ( $meta as $index => $sub_meta )
-			{
-				$sub_field               = $field;
-				$sub_field['field_name'] = $field['field_name'] . "[{$index}]";
-				if ( $index > 0 )
-				{
-					if ( isset( $sub_field['address_field'] ) )
-						$sub_field['address_field'] = $field['address_field'] . "_{$index}";
-					$sub_field['id'] = $field['id'] . "_{$index}";
-				}
-				if ( $field['multiple'] )
-					$sub_field['field_name'] .= '[]';
-
-				// Wrap field HTML in a div with class="rwmb-clone" if needed
-				$class     = "rwmb-clone rwmb-{$field['type']}-clone";
-				$sort_icon = '';
-				if ( $field['sort_clone'] )
-				{
-					$class .= ' rwmb-sort-clone';
-					$sort_icon = "<a href='javascript:;' class='rwmb-clone-icon'></a>";
-				}
-				$input_html = "<div class='$class'>" . $sort_icon;
-
-				// Call separated methods for displaying each type of field
-				$input_html .= self::call( $sub_field, 'html', $sub_meta );
-				$input_html = self::filter( 'html', $input_html, $sub_field, $sub_meta );
-
-				// Remove clone button
-				$input_html .= self::call( 'remove_clone_button', $sub_field );
-
-				$input_html .= '</div>';
-
-				$field_html .= $input_html;
-			}
+			$field_html = RWMB_Clone::html( $meta, $field );
 		}
 		// Non-cloneable fields
 		else
@@ -171,40 +132,18 @@ abstract class RWMB_Field
 	 */
 	public static function end_html( $meta, $field )
 	{
-		$button = $field['clone'] ? self::call( 'add_clone_button', $field ) : '';
-		$desc   = $field['desc'] ? "<p id='{$field['id']}_description' class='description'>{$field['desc']}</p>" : '';
-
-		// Closes the container
-		$html = "{$button}{$desc}</div>";
-
-		return $html;
+		return RWMB_Clone::add_clone_button( $field ) . self::call( 'element_description', $field ) . '</div>';
 	}
 
 	/**
-	 * Add clone button
-	 *
-	 * @param array $field Field parameter
-	 *
-	 * @return string $html
+	 * Display field description.
+	 * @param array $field
+	 * @return string
 	 */
-	public static function add_clone_button( $field )
+	protected static function element_description( $field )
 	{
-		$text = apply_filters( 'rwmb_add_clone_button_text', __( '+ Add more', 'meta-box' ), $field );
-		return "<a href='#' class='rwmb-button button-primary add-clone'>$text</a>";
-	}
-
-	/**
-	 * Remove clone button
-	 *
-	 * @param array $field Field parameter
-	 *
-	 * @return string $html
-	 */
-	public static function remove_clone_button( $field )
-	{
-		$icon = '<i class="dashicons dashicons-minus"></i>';
-		$text = apply_filters( 'rwmb_remove_clone_button_text', $icon, $field );
-		return "<a href='#' class='rwmb-button remove-clone'>$text</a>";
+		$id = $field['id'] ? " id='{$field['id']}-description'" : '';
+		return $field['desc'] ? "<p{$id} class='description'>{$field['desc']}</p>" : '';
 	}
 
 	/**
@@ -229,7 +168,7 @@ abstract class RWMB_Field
 		$meta   = get_post_meta( $post_id, $field['id'], $single );
 
 		// Use $field['std'] only when the meta box hasn't been saved (i.e. the first time we run)
-		$meta = ( ! $saved && '' === $meta || array() === $meta ) ? $field['std'] : $meta;
+		$meta = ! $saved ? $field['std'] : $meta;
 
 		// Escape attributes
 		$meta = self::call( $field, 'esc_meta', $meta );

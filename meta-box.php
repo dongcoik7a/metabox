@@ -11,8 +11,9 @@
  * Domain Path: /lang/
  */
 
-if ( defined( 'ABSPATH' ) && ! class_exists( 'RWMB_Loader' ) )
+if ( defined( 'ABSPATH' ) && ! defined( 'RWMB_VER' ) )
 {
-	require plugin_dir_path( __FILE__ ) . 'inc/loader.php';
-	new RWMB_Loader;
+	require_once plugin_dir_path( __FILE__ ) . 'inc/loader.php';
+	$loader = new RWMB_Loader;
+	$loader->init();
 }
