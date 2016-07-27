@@ -34,9 +34,9 @@ class RWMB_Taxonomy_Advanced_Field extends RWMB_Taxonomy_Field
 	public static function save( $new, $old, $post_id, $field )
 	{
 		if ( $new )
-			update_post_meta( $post_id, $field['id'], $new );
+			update_metadata( $field['meta_data'], $post_id, $field['id'], $new );
 		else
-			delete_post_meta( $post_id, $field['id'] );
+			delete_metadata( $field['meta_data'], $post_id, $field['id'] );
 	}
 
 	/**
@@ -50,7 +50,7 @@ class RWMB_Taxonomy_Advanced_Field extends RWMB_Taxonomy_Field
 	 */
 	public static function meta( $post_id, $saved, $field )
 	{
-		$meta = get_post_meta( $post_id, $field['id'], true );
+		$meta = self::call( $field, 'raw_meta', $object_id );
 		$meta = wp_parse_id_list( $meta );
 		$meta = array_filter( $meta );
 		return $meta;

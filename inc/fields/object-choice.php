@@ -92,7 +92,7 @@ abstract class RWMB_Object_Choice_Field extends RWMB_Choice_Field
 	 */
 	static function save( $new, $old, $post_id, $field )
 	{
-		delete_post_meta( $post_id, $field['id'] );
+		delete_metadata( $field['meta_type'], $post_id, $field['id'] );
 		parent::save( $new, array(), $post_id, $field );
 	}
 
