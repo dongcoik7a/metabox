@@ -31,12 +31,11 @@ abstract class RWMB_Field
 	 *
 	 * @return string
 	 */
-	public static function show( $field, $saved )
+	public static function show( $field, $saved, $object_id )
 	{
-		$post    = get_post();
-		$post_id = isset( $post->ID ) ? $post->ID : 0;
+		$object_id = isset( $object_id ) ? $object_id : 0;
 
-		$meta = self::call( $field, 'meta', $post_id, $saved );
+		$meta = self::call( $field, 'meta', $object_id, $saved );
 		$meta = self::filter( 'field_meta', $meta, $field, $saved );
 
 		$begin = self::call( $field, 'begin_html', $meta );
@@ -147,15 +146,36 @@ abstract class RWMB_Field
 	}
 
 	/**
+	 * Get raw meta value
+	 *
+	 * @param int   $object_id
+	 * @param array $field
+	 *
+	 * @return mixed
+	 */
+	public static function raw_meta( $object_id, $field )
+	{
+		/**
+		 * For special fields like 'divider', 'heading' which don't have ID, just return empty string
+		 * to prevent notice error when displaying fields.  Also for when not meta type is specified
+		 */
+		if ( empty( $field['meta_type'] ) || empty( $field['id'] ) )
+			return '';
+
+		$single = $field['clone'] || ! $field['multiple'];
+		return get_metadata( $field['meta_type'], $object_id, $field['id'], $single );
+	}
+
+	/**
 	 * Get meta value
 	 *
-	 * @param int   $post_id
+	 * @param int   $object_id
 	 * @param bool  $saved
 	 * @param array $field
 	 *
 	 * @return mixed
 	 */
-	public static function meta( $post_id, $saved, $field )
+	public static function meta( $object_id, $saved, $field )
 	{
 		/**
 		 * For special fields like 'divider', 'heading' which don't have ID, just return empty string
@@ -164,8 +184,7 @@ abstract class RWMB_Field
 		if ( empty( $field['id'] ) )
 			return '';
 
-		$single = $field['clone'] || ! $field['multiple'];
-		$meta   = get_post_meta( $post_id, $field['id'], $single );
+		$meta   = self::call( $field, 'raw_meta', $object_id );
 
 		// Use $field['std'] only when the meta box hasn't been saved (i.e. the first time we run)
 		$meta = ! $saved ? $field['std'] : $meta;
@@ -207,12 +226,12 @@ abstract class RWMB_Field
 	 *
 	 * @param mixed $new
 	 * @param mixed $old
-	 * @param int   $post_id
+	 * @param int   $object_id
 	 * @param array $field
 	 *
 	 * @return int
 	 */
-	public static function value( $new, $old, $post_id, $field )
+	public static function value( $new, $old, $object_id, $field )
 	{
 		return $new;
 	}
@@ -222,17 +241,17 @@ abstract class RWMB_Field
 	 *
 	 * @param $new
 	 * @param $old
-	 * @param $post_id
+	 * @param $object_id
 	 * @param $field
 	 */
-	public static function save( $new, $old, $post_id, $field )
+	public static function save( $new, $old, $object_id, $field )
 	{
 		$name = $field['id'];
 
 		// Remove post meta if it's empty
 		if ( '' === $new || array() === $new )
 		{
-			delete_post_meta( $post_id, $name );
+			delete_metadata( $field['meta_type'], $object_id, $name );
 			return;
 		}
 
@@ -248,7 +267,7 @@ abstract class RWMB_Field
 			}
 			// Reset indexes
 			$new = array_values( $new );
-			update_post_meta( $post_id, $name, $new );
+			update_metadata( $field['meta_type'], $object_id, $name, $new );
 			return;
 		}
 
@@ -258,18 +277,18 @@ abstract class RWMB_Field
 			$new_values = array_diff( $new, $old );
 			foreach ( $new_values as $new_value )
 			{
-				add_post_meta( $post_id, $name, $new_value, false );
+				add_metadata( $field['meta_type'], $object_id, $name, $new_value, false );
 			}
 			$old_values = array_diff( $old, $new );
 			foreach ( $old_values as $old_value )
 			{
-				delete_post_meta( $post_id, $name, $old_value );
+				delete_metadata( $field['meta_type'], $object_id, $name, $old_value );
 			}
 			return;
 		}
 
 		// Default: just update post meta
-		update_post_meta( $post_id, $name, $new );
+		update_metadata( $field['meta_type'], $object_id, $name, $new );
 	}
 
 	/**
@@ -284,6 +303,7 @@ abstract class RWMB_Field
 		$field = wp_parse_args( $field, array(
 			'id'          => '',
 			'name'        => '',
+			'meta_type'   => 'post',
 			'multiple'    => false,
 			'std'         => '',
 			'desc'        => '',
@@ -380,7 +400,7 @@ abstract class RWMB_Field
 
 		// Get raw meta value in the database, no escape
 		$single = $field['clone'] || ! $field['multiple'];
-		$value  = get_post_meta( $post_id, $field['id'], $single );
+		$value  = get_metadata( $field['meta_type'], $post_id, $field['id'], $single );
 
 		// Make sure meta value is an array for cloneable and multiple fields
 		if ( $field['clone'] || $field['multiple'] )

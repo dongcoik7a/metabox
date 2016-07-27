@@ -155,9 +155,9 @@ class RW_Meta_Box
 	/**
 	 * Callback function to show fields in meta box
 	 */
-	public function show()
+	public function show( $post )
 	{
-		$saved = $this->is_saved();
+		$saved = $this->is_saved( $post );
 
 		// Container
 		printf(
@@ -175,7 +175,7 @@ class RW_Meta_Box
 
 		foreach ( $this->fields as $field )
 		{
-			RWMB_Field::call( 'show', $field, $saved );
+			RWMB_Field::call( 'show', $field, $saved, $post->ID );
 		}
 
 		// Allow users to add custom code after meta box content
@@ -209,7 +209,7 @@ class RW_Meta_Box
 		foreach ( $this->fields as $field )
 		{
 			$single = $field['clone'] || ! $field['multiple'];
-			$old    = get_post_meta( $post_id, $field['id'], $single );
+			$old    = RWMB_Field::call( $field, 'raw_meta', $post_id );
 			$new    = isset( $_POST[$field['id']] ) ? $_POST[$field['id']] : ( $single ? '' : array() );
 
 			// Allow field class change the value
@@ -290,7 +290,7 @@ class RW_Meta_Box
 	{
 		foreach ( $fields as $k => $field )
 		{
-			$field = RWMB_Field::call( 'normalize', $field );
+			$field = RWMB_Field::call( $field, 'normalize' );
 
 			// Allow to add default values for fields
 			$field = apply_filters( 'rwmb_normalize_field', $field );
@@ -308,17 +308,15 @@ class RW_Meta_Box
 	 * This helps saving empty value in meta fields (text, check box, etc.) and set the correct default values.
 	 * @return bool
 	 */
-	public function is_saved()
+	public function is_saved( $post )
 	{
-		$post = get_post();
-
 		foreach ( $this->fields as $field )
 		{
 			if ( empty( $field['id'] ) )
 			{
 				continue;
 			}
-			$value = get_post_meta( $post->ID, $field['id'], ! $field['multiple'] );
+			$value = RWMB_Field::call( $field, 'raw_meta', $post->ID );
 			if (
 				( ! $field['multiple'] && '' !== $value )
 				|| ( $field['multiple'] && array() !== $value )
