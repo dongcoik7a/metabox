@@ -126,7 +126,7 @@ class RW_Meta_Box
 			add_meta_box(
 				$this->meta_box['id'],
 				$this->meta_box['title'],
-				array( $this, 'show' ),
+				array( $this, 'show_metabox' ),
 				$post_type,
 				$this->meta_box['context'],
 				$this->meta_box['priority']
@@ -152,12 +152,16 @@ class RW_Meta_Box
 		return $hidden;
 	}
 
+	public function show_metabox( $post ) {
+		$this->show( $post->ID );
+	}
+
 	/**
 	 * Callback function to show fields in meta box
 	 */
-	public function show( $post )
+	public function show( $object_id  )
 	{
-		$saved = $this->is_saved( $post );
+		$saved = $this->is_saved( $object_id  );
 
 		// Container
 		printf(
@@ -175,7 +179,7 @@ class RW_Meta_Box
 
 		foreach ( $this->fields as $field )
 		{
-			RWMB_Field::call( 'show', $field, $saved, $post->ID );
+			RWMB_Field::call( 'show', $field, $saved, $object_id   );
 		}
 
 		// Allow users to add custom code after meta box content
@@ -208,29 +212,38 @@ class RW_Meta_Box
 
 		foreach ( $this->fields as $field )
 		{
-			$single = $field['clone'] || ! $field['multiple'];
-			$old    = RWMB_Field::call( $field, 'raw_meta', $post_id );
-			$new    = isset( $_POST[$field['id']] ) ? $_POST[$field['id']] : ( $single ? '' : array() );
-
-			// Allow field class change the value
-			if ( $field['clone'] )
-			{
-				$new = RWMB_Clone::value( $new, $old, $post_id, $field );
-			}
-			else
-			{
-				$new = RWMB_Field::call( $field, 'value', $new, $old, $post_id );
-				$new = RWMB_Field::filter( 'sanitize', $new, $field );
-			}
-			$new = RWMB_Field::filter( 'value', $new, $field, $old );
-
-			// Call defined method to save meta value, if there's no methods, call common one
-			RWMB_Field::call( $field, 'save', $new, $old, $post_id );
+			$this->save_field( $field, $post_id );
 		}
 
 		// After save action
 		do_action( 'rwmb_after_save_post', $post_id );
 		do_action( "rwmb_{$this->meta_box['id']}_after_save_post", $post_id );
+	}
+
+	/**
+	 * Save data from meta box
+	 * @param int $object_id Post ID
+	 */
+	public function save_field( $field, $object_id )
+	{
+		$single = $field['clone'] || ! $field['multiple'];
+		$old    = RWMB_Field::call( $field, 'raw_meta', $object_id  );
+		$new    = isset( $_POST[$field['id']] ) ? $_POST[$field['id']] : ( $single ? '' : array() );
+
+		// Allow field class change the value
+		if ( $field['clone'] )
+		{
+			$new = RWMB_Clone::value( $new, $old, $object_id , $field );
+		}
+		else
+		{
+			$new = RWMB_Field::call( $field, 'value', $new, $old, $object_id  );
+			$new = RWMB_Field::filter( 'sanitize', $new, $field );
+		}
+		$new = RWMB_Field::filter( 'value', $new, $field, $old );
+
+		// Call defined method to save meta value, if there's no methods, call common one
+		RWMB_Field::call( $field, 'save', $new, $old, $object_id  );
 	}
 
 	/**
@@ -308,7 +321,7 @@ class RW_Meta_Box
 	 * This helps saving empty value in meta fields (text, check box, etc.) and set the correct default values.
 	 * @return bool
 	 */
-	public function is_saved( $post )
+	public function is_saved( $object_id  )
 	{
 		foreach ( $this->fields as $field )
 		{
@@ -316,7 +329,7 @@ class RW_Meta_Box
 			{
 				continue;
 			}
-			$value = RWMB_Field::call( $field, 'raw_meta', $post->ID );
+			$value = RWMB_Field::call( $field, 'raw_meta', $object_id   );
 			if (
 				( ! $field['multiple'] && '' !== $value )
 				|| ( $field['multiple'] && array() !== $value )
