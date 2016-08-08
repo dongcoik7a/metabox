@@ -222,7 +222,8 @@ class RW_Meta_Box
 
 	/**
 	 * Save data from meta box
-	 * @param int $object_id Post ID
+	 * @param array $field Object ID
+	 * @param int $object_id Object ID
 	 */
 	public function save_field( $field, $object_id )
 	{
