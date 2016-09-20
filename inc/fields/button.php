@@ -8,13 +8,12 @@ class RWMB_Button_Field extends RWMB_Field
 	 * Get field HTML
 	 *
 	 * @param mixed $meta
-	 * @param array $field
 	 * @return string
 	 */
-	static function html( $meta, $field )
+	public function html( $meta )
 	{
-		$attributes = self::get_attributes( $field );
-		return sprintf( '<a href="#" %s>%s</a>', self::render_attributes( $attributes ), $field['std'] );
+		$attributes = $this->get_attributes( $meta );
+		return sprintf( '<a href="#" %s>%s</a>', self::render_attributes( $attributes ), $this->std );
 	}
 
 	/**
@@ -33,13 +32,12 @@ class RWMB_Button_Field extends RWMB_Field
 	/**
 	 * Get the attributes for a field
 	 *
-	 * @param array $field
 	 * @param mixed $value
 	 * @return array
 	 */
-	static function get_attributes( $field, $value = null )
+	public function get_attributes( $value = null )
 	{
-		$attributes = parent::get_attributes( $field, $value );
+		$attributes = parent::get_attributes( $value );
 		$attributes['class'] .= ' button hide-if-no-js';
 
 		return $attributes;

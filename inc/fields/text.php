@@ -7,10 +7,9 @@ class RWMB_Text_Field extends RWMB_Input_Field
 	/**
 	 * Normalize parameters for field
 	 *
-	 * @param array $field
 	 * @return array
 	 */
-	static function normalize( $field )
+	public function normalize( $field )
 	{
 		$field = parent::normalize( $field );
 
@@ -26,19 +25,18 @@ class RWMB_Text_Field extends RWMB_Input_Field
 	/**
 	 * Get the attributes for a field
 	 *
-	 * @param array $field
 	 * @param mixed $value
 	 *
 	 * @return array
 	 */
-	static function get_attributes( $field, $value = null )
+	public function get_attributes( $value = null )
 	{
-		$attributes = parent::get_attributes( $field, $value );
+		$attributes = parent::get_attributes( $value );
 		$attributes = wp_parse_args( $attributes, array(
-			'size'        => $field['size'],
-			'maxlength'   => $field['maxlength'],
-			'pattern'     => $field['pattern'],
-			'placeholder' => $field['placeholder'],
+			'size'        => $this->size,
+			'maxlength'   => $this->maxlength,
+			'pattern'     => $this->pattern,
+			'placeholder' => $this->placeholder,
 		) );
 
 		return $attributes;

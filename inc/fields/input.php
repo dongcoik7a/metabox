@@ -9,22 +9,20 @@ abstract class RWMB_Input_Field extends RWMB_Field
 	 * Get field HTML
 	 *
 	 * @param mixed $meta
-	 * @param array $field
 	 * @return string
 	 */
-	public static function html( $meta, $field )
+	public function html( $meta )
 	{
-		$attributes = self::call( 'get_attributes', $field, $meta );
-		return sprintf( '<input %s>%s', self::render_attributes( $attributes ), self::datalist( $field ) );
+		$attributes = $this->get_attributes( $meta );
+		return sprintf( '<input %s>%s', self::render_attributes( $attributes ), s$this->datalist() );
 	}
 
 	/**
 	 * Normalize parameters for field
 	 *
-	 * @param array $field
 	 * @return array
 	 */
-	public static function normalize( $field )
+	public function normalize( $field )
 	{
 		$field = parent::normalize( $field );
 		$field = wp_parse_args( $field, array(
@@ -44,19 +42,18 @@ abstract class RWMB_Input_Field extends RWMB_Field
 	/**
 	 * Get the attributes for a field
 	 *
-	 * @param array $field
 	 * @param mixed $value
 	 * @return array
 	 */
-	public static function get_attributes( $field, $value = null )
+	public function get_attributes( $value = null )
 	{
-		$attributes = parent::get_attributes( $field, $value );
+		$attributes = parent::get_attributes( $value );
 		$attributes = wp_parse_args( $attributes, array(
-			'list'        => $field['datalist'] ? $field['datalist']['id'] : false,
-			'readonly'    => $field['readonly'],
+			'list'        => $this->datalist ? $this->datalist['id'] : false,
+			'readonly'    => $this->readonly,
 			'value'       => $value,
-			'placeholder' => $field['placeholder'],
-			'type'        => $field['type'],
+			'placeholder' => $this->placeholder,
+			'type'        => $this->type,
 		) );
 
 		return $attributes;
@@ -65,15 +62,14 @@ abstract class RWMB_Input_Field extends RWMB_Field
 	/**
 	 * Create datalist, if any.
 	 *
-	 * @param array $field
 	 * @return array
 	 */
-	protected static function datalist( $field )
+	protected function datalist()
 	{
-		if ( empty( $field['datalist'] ) )
+		if ( empty( $this->datalist ) )
 			return '';
 
-		$datalist = $field['datalist'];
+		$datalist = $this->datalist;
 		$html     = sprintf( '<datalist id="%s">', $datalist['id'] );
 		foreach ( $datalist['options'] as $option )
 		{

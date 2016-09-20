@@ -19,14 +19,13 @@ class RWMB_Heading_Field extends RWMB_Field
 	 * Show begin HTML markup for fields
 	 *
 	 * @param mixed $meta
-	 * @param array $field
 	 *
 	 * @return string
 	 */
-	static function begin_html( $meta, $field )
+	public function begin_html( $meta )
 	{
-		$attributes = empty( $field['id'] ) ? '' : " id='{$field['id']}'";
-		return sprintf( '<h4%s>%s</h4>', $attributes, $field['name'] );
+		$attributes = empty( $this->id ) ? '' : " id='{$this->id}'";
+		return sprintf( '<h4%s>%s</h4>', $attributes, $this->name );
 	}
 
 	/**
@@ -37,8 +36,8 @@ class RWMB_Heading_Field extends RWMB_Field
 	 *
 	 * @return string
 	 */
-	static function end_html( $meta, $field )
+	public function end_html( $meta )
 	{
-		return self::element_description( $field );
+		return $this->element_description();
 	}
 }

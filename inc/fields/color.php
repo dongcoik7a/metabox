@@ -18,9 +18,10 @@ class RWMB_Color_Field extends RWMB_Text_Field
 	 * Normalize parameters for field.
 	 *
 	 * @param array $field
+	 *
 	 * @return array
 	 */
-	static function normalize( $field )
+	public function normalize( $field )
 	{
 		$field = wp_parse_args( $field, array(
 			'size'       => 7,
@@ -43,15 +44,14 @@ class RWMB_Color_Field extends RWMB_Text_Field
 	/**
 	 * Get the attributes for a field
 	 *
-	 * @param array $field
 	 * @param mixed $value
 	 * @return array
 	 */
-	static function get_attributes( $field, $value = null )
+	public function get_attributes( $value = null )
 	{
-		$attributes = parent::get_attributes( $field, $value );
+		$attributes = parent::get_attributes( $value );
 		$attributes = wp_parse_args( $attributes, array(
-			'data-options' => wp_json_encode( $field['js_options'] ),
+			'data-options' => wp_json_encode( $this->js_options ),
 		) );
 		$attributes['type'] = 'text';
 
@@ -60,11 +60,10 @@ class RWMB_Color_Field extends RWMB_Text_Field
 
 	/**
 	 * Format a single value for the helper functions.
-	 * @param array  $field Field parameter
 	 * @param string $value The value
 	 * @return string
 	 */
-	static function format_single_value( $field, $value )
+	function format_single_value( $value )
 	{
 		return sprintf( "<span style='display:inline-block;width:20px;height:20px;border-radius:50%%;background:%s;'></span>", $value );
 	}

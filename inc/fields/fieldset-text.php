@@ -9,33 +9,31 @@ class RWMB_Fieldset_Text_Field extends RWMB_Text_Field
 	 * Get field HTML
 	 *
 	 * @param mixed $meta
-	 * @param array $field
 	 *
 	 * @return string
 	 */
-	static function html( $meta, $field )
+	public function html( $meta )
 	{
 		$html = array();
 		$tpl  = '<label>%s %s</label>';
 
-		foreach ( $field['options'] as $key => $label )
+		foreach ( $this->options as $key => $label )
 		{
 			$value                       = isset( $meta[$key] ) ? $meta[$key] : '';
-			$field['attributes']['name'] = $field['field_name'] . "[{$key}]";
-			$html[]                      = sprintf( $tpl, $label, parent::html( $value, $field ) );
+			$this->attributes['name'] = $this->field_name . "[{$key}]";
+			$html[]                      = sprintf( $tpl, $label, parent::html( $value ) );
 		}
 
-		$out = '<fieldset><legend>' . $field['desc'] . '</legend>' . implode( ' ', $html ) . '</fieldset>';
+		$out = '<fieldset><legend>' . $this->desc . '</legend>' . implode( ' ', $html ) . '</fieldset>';
 
 		return $out;
 	}
 
 	/**
 	 * Do not show field description.
-	 * @param array $field
 	 * @return string
 	 */
-	public static function element_description( $field )
+	public function element_description()
 	{
 		return '';
 	}
@@ -47,7 +45,7 @@ class RWMB_Fieldset_Text_Field extends RWMB_Text_Field
 	 *
 	 * @return array
 	 */
-	static function normalize( $field )
+	public function normalize( $field )
 	{
 		$field                       = parent::normalize( $field );
 		$field['multiple']           = false;
@@ -58,28 +56,27 @@ class RWMB_Fieldset_Text_Field extends RWMB_Text_Field
 
 	/**
 	 * Format value for the helper functions.
-	 * @param array        $field Field parameter
 	 * @param string|array $value The field meta value
 	 * @return string
 	 */
-	public static function format_value( $field, $value )
+	public function format_value( $value )
 	{
 		$output = '<table><thead><tr>';
-		foreach ( $field['options'] as $label )
+		foreach ( $this->options as $label )
 		{
 			$output .= "<th>$label</th>";
 		}
 		$output .= '<tr>';
 
-		if ( ! $field['clone'] )
+		if ( ! $this->clone )
 		{
-			$output .= self::format_single_value( $field, $value );
+			$output .= $this->format_single_value( $value );
 		}
 		else
 		{
 			foreach ( $value as $subvalue )
 			{
-				$output .= self::format_single_value( $field, $subvalue );
+				$output .= $this->format_single_value( $subvalue );
 			}
 		}
 		$output .= '</tbody></table>';
@@ -88,11 +85,10 @@ class RWMB_Fieldset_Text_Field extends RWMB_Text_Field
 
 	/**
 	 * Format a single value for the helper functions.
-	 * @param array $field Field parameter
 	 * @param array $value The value
 	 * @return string
 	 */
-	public static function format_single_value( $field, $value )
+	public function format_single_value( $value )
 	{
 		$output = '<tr>';
 		foreach ( $value as $subvalue )

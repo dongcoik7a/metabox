@@ -11,7 +11,7 @@ class RWMB_Number_Field extends RWMB_Input_Field
 	 *
 	 * @return array
 	 */
-	static function normalize( $field )
+	public function normalize( $field )
 	{
 		$field = parent::normalize( $field );
 
@@ -27,18 +27,17 @@ class RWMB_Number_Field extends RWMB_Input_Field
 	/**
 	 * Get the attributes for a field
 	 *
-	 * @param array $field
 	 * @param mixed $value
 	 *
 	 * @return array
 	 */
-	static function get_attributes( $field, $value = null )
+	public function get_attributes( $value = null )
 	{
-		$attributes = parent::get_attributes( $field, $value );
+		$attributes = parent::get_attributes( $value );
 		$attributes = wp_parse_args( $attributes, array(
-			'step' => $field['step'],
-			'max'  => $field['max'],
-			'min'  => $field['min'],
+			'step' => $this->step,
+			'max'  => $this->max,
+			'min'  => $this->min,
 		) );
 		return $attributes;
 	}

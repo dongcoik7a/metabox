@@ -8,16 +8,15 @@ class RWMB_Custom_Html_Field extends RWMB_Field
 	 * Get field HTML
 	 *
 	 * @param mixed $meta
-	 * @param array $field
 	 *
 	 * @return string
 	 */
-	static function html( $meta, $field )
+	public function html( $meta )
 	{
-		$html = ! empty( $field['std'] ) ? $field['std'] : '';
-		if ( ! empty( $field['callback'] ) && is_callable( $field['callback'] ) )
+		$html = ! empty( $this->std ) ? $this->std : '';
+		if ( ! empty( $this->callback ) && is_callable( $this->callback ) )
 		{
-			$html = call_user_func_array( $field['callback'], array( $meta, $field ) );
+			$html = call_user_func_array( $this->callback, array( $meta, $this ) );
 		}
 		return $html;
 	}

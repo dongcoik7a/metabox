@@ -8,12 +8,11 @@ class RWMB_Range_Field extends RWMB_Number_Field
 	 * Get field HTML
 	 *
 	 * @param mixed $meta
-	 * @param array $field
 	 * @return string
 	 */
-	public static function html( $meta, $field )
+	public function html( $meta )
 	{
-		$output = parent::html( $meta, $field );
+		$output = parent::html( $meta );
 		$output .= sprintf( '<span class="rwmb-output">%s</span>', $meta );
 		return $output;
 	}
@@ -32,7 +31,7 @@ class RWMB_Range_Field extends RWMB_Number_Field
 	 * @param array $field
 	 * @return array
 	 */
-	public static function normalize( $field )
+	public function normalize( $field )
 	{
 		$field = wp_parse_args( $field, array(
 			'max' => 10,
@@ -47,15 +46,14 @@ class RWMB_Range_Field extends RWMB_Number_Field
 	 * @param mixed $new
 	 * @param mixed $old
 	 * @param int   $post_id
-	 * @param array $field
 	 *
 	 * @return int
 	 */
-	public static function value( $new, $old, $post_id, $field )
+	public function value( $new, $old, $post_id )
 	{
 		$new = intval( $new );
-		$min = intval( $field['min'] );
-		$max = intval( $field['max'] );
+		$min = intval( $this->min );
+		$max = intval( $this->max );
 
 		if ( $new < $min )
 		{

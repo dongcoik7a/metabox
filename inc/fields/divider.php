@@ -18,13 +18,12 @@ class RWMB_Divider_Field extends RWMB_Field
 	 * Show begin HTML markup for fields
 	 *
 	 * @param mixed $meta
-	 * @param array $field
 	 *
 	 * @return string
 	 */
-	static function begin_html( $meta, $field )
+	public function begin_html( $meta )
 	{
-		$attributes = empty( $field['id'] ) ? '' : " id='{$field['id']}'";
+		$attributes = empty( $this->id ) ? '' : " id='{$this->id}'";
 		return "<hr$attributes>";
 	}
 
@@ -32,11 +31,10 @@ class RWMB_Divider_Field extends RWMB_Field
 	 * Show end HTML markup for fields
 	 *
 	 * @param mixed $meta
-	 * @param array $field
 	 *
 	 * @return string
 	 */
-	static function end_html( $meta, $field )
+	static function end_html( $meta )
 	{
 		return '';
 	}
