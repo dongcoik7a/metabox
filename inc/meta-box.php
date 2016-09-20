@@ -31,11 +31,8 @@ class RW_Meta_Box
 	 */
 	public function __construct( $meta_box )
 	{
-		$meta_box           = self::normalize( $meta_box );
-		$meta_box['fields'] = self::normalize_fields( $meta_box['fields'] );
-
-		$this->meta_box = $meta_box;
-		$this->fields   = &$this->meta_box['fields'];
+		$this->meta_box = self::normalize( $meta_box );
+		$this->fields   = self::register_fields( $this->meta_box['fields'] );
 
 		// Allow users to show/hide meta box
 		// 1st action applies to all meta boxes
@@ -47,12 +44,6 @@ class RW_Meta_Box
 
 		// Enqueue common styles and scripts
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue' ) );
-
-		// Add additional actions for fields
-		foreach ( $this->fields as $field )
-		{
-			RWMB_Field::call( $field, 'add_actions' );
-		}
 
 		// Add meta box
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
@@ -92,17 +83,11 @@ class RW_Meta_Box
 		// Load clone script conditionally
 		foreach ( $this->fields as $field )
 		{
-			if ( $field['clone'] )
+			if ( $field->clone )
 			{
 				wp_enqueue_script( 'rwmb-clone', RWMB_JS_URL . 'clone.js', array( 'jquery-ui-sortable' ), RWMB_VER, true );
 				break;
 			}
-		}
-
-		// Enqueue scripts and styles for fields
-		foreach ( $this->fields as $field )
-		{
-			RWMB_Field::call( $field, 'admin_enqueue_scripts' );
 		}
 
 		// Auto save
@@ -175,7 +160,7 @@ class RW_Meta_Box
 
 		foreach ( $this->fields as $field )
 		{
-			RWMB_Field::call( 'show', $field, $saved );
+			$field->show( $saved );
 		}
 
 		// Allow users to add custom code after meta box content
@@ -208,24 +193,24 @@ class RW_Meta_Box
 
 		foreach ( $this->fields as $field )
 		{
-			$single = $field['clone'] || ! $field['multiple'];
-			$old    = get_post_meta( $post_id, $field['id'], $single );
-			$new    = isset( $_POST[$field['id']] ) ? $_POST[$field['id']] : ( $single ? '' : array() );
+			$single = $field->clone || ! $field->multiple;
+			$old    = get_post_meta( $post_id, $field->id, $single );
+			$new    = isset( $_POST[$field->id] ) ? $_POST[$field->id] : ( $single ? '' : array() );
 
 			// Allow field class change the value
-			if ( $field['clone'] )
+			if ( $field->clone )
 			{
 				$new = RWMB_Clone::value( $new, $old, $post_id, $field );
 			}
 			else
 			{
-				$new = RWMB_Field::call( $field, 'value', $new, $old, $post_id );
+				$new = $field->value( $new, $old, $post_id );
 				$new = RWMB_Field::filter( 'sanitize', $new, $field );
 			}
 			$new = RWMB_Field::filter( 'value', $new, $field, $old );
 
 			// Call defined method to save meta value, if there's no methods, call common one
-			RWMB_Field::call( $field, 'save', $new, $old, $post_id );
+			$field->save( $new, $old, $post_id );
 		}
 
 		// After save action
@@ -286,18 +271,11 @@ class RW_Meta_Box
 	 * @param array $fields Array of fields
 	 * @return array $fields Normalized fields
 	 */
-	public static function normalize_fields( $fields )
+	public static function register_fields( $fields )
 	{
 		foreach ( $fields as $k => $field )
 		{
-			$field = RWMB_Field::call( 'normalize', $field );
-
-			// Allow to add default values for fields
-			$field = apply_filters( 'rwmb_normalize_field', $field );
-			$field = apply_filters( "rwmb_normalize_{$field['type']}_field", $field );
-			$field = apply_filters( "rwmb_normalize_{$field['id']}_field", $field );
-
-			$fields[$k] = $field;
+			$fields[$k] = RWMB_Field::register( $field );
 		}
 
 		return $fields;
@@ -314,14 +292,14 @@ class RW_Meta_Box
 
 		foreach ( $this->fields as $field )
 		{
-			if ( empty( $field['id'] ) )
+			if ( empty( $field->id ) )
 			{
 				continue;
 			}
-			$value = get_post_meta( $post->ID, $field['id'], ! $field['multiple'] );
+			$value = get_post_meta( $post->ID, $field->id, ! $field->multiple );
 			if (
-				( ! $field['multiple'] && '' !== $value )
-				|| ( $field['multiple'] && array() !== $value )
+				( ! $field->multiple && '' !== $value )
+				|| ( $field->multiple && array() !== $value )
 			)
 			{
 				return true;
