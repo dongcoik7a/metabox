@@ -60,7 +60,7 @@ class RWMB_Media_Field extends RWMB_File_Field
 	{
 		$meta       = (array) $meta;
 		$meta       = implode( ',', $meta );
-		$attributes = $load_test_attr = self::get_attributes( $field, $meta );
+		$attributes = self::get_attributes( $field, $meta );
 
 		$html = sprintf(
 			'<input %s>

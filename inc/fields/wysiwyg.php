@@ -26,31 +26,29 @@ class RWMB_Wysiwyg_Field extends RWMB_Field
 	 * @param mixed $new
 	 * @param mixed $old
 	 * @param int   $post_id
-	 * @param array $field
 	 * @return string
 	 */
-	static function value( $new, $old, $post_id, $field )
+	public function value( $new, $old, $post_id )
 	{
-		return  $field['raw'] ? $new : wpautop( $new );
+		return  $this->raw ? $new : wpautop( $new );
 	}
 
 	/**
 	 * Get field HTML
 	 *
 	 * @param mixed $meta
-	 * @param array $field
 	 * @return string
 	 */
-	static function html( $meta, $field )
+	public function html( $meta )
 	{
 		// Using output buffering because wp_editor() echos directly
 		ob_start();
 
-		$field['options']['textarea_name'] = $field['field_name'];
-		$attributes = self::get_attributes( $field );
+		$this->options['textarea_name'] = $this->field_name;
+		$attributes = $this->get_attributes();
 
 		// Use new wp_editor() since WP 3.3
-		wp_editor( $meta, $attributes['id'], $field['options'] );
+		wp_editor( $meta, $attributes['id'], $this->options );
 
 		return ob_get_clean();
 	}
@@ -61,7 +59,7 @@ class RWMB_Wysiwyg_Field extends RWMB_Field
 	 * @param mixed $meta
 	 * @return mixed
 	 */
-	static function esc_meta( $meta )
+	public function esc_meta( $meta )
 	{
 		return $meta;
 	}

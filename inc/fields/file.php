@@ -89,19 +89,18 @@ class RWMB_File_Field extends RWMB_Field
 	 * Get field HTML
 	 *
 	 * @param mixed $meta
-	 * @param array $field
 	 *
 	 * @return string
 	 */
-	public static function html( $meta, $field )
+	public function html( $meta )
 	{
-		$i18n_title = apply_filters( 'rwmb_file_upload_string', _x( 'Upload Files', 'file upload', 'meta-box' ), $field );
-		$i18n_more  = apply_filters( 'rwmb_file_add_string', _x( '+ Add new file', 'file upload', 'meta-box' ), $field );
+		$i18n_title = apply_filters( 'rwmb_file_upload_string', _x( 'Upload Files', 'file upload', 'meta-box' ), $this );
+		$i18n_more  = apply_filters( 'rwmb_file_add_string', _x( '+ Add new file', 'file upload', 'meta-box' ), $this );
 
 		// Uploaded files
-		$html    = self::get_uploaded_files( $meta, $field );
+		$html    = $this->get_uploaded_files( $meta );
 		$classes = 'new-files';
-		if ( ! empty( $field['max_file_uploads'] ) && count( $meta ) >= (int) $field['max_file_uploads'] )
+		if ( ! empty( $this->max_file_uploads ) && count( $meta ) >= (int) $this->max_file_uploads )
 			$classes .= ' hidden';
 
 		// Show form upload
@@ -113,7 +112,7 @@ class RWMB_File_Field extends RWMB_Field
 			</div>',
 			$classes,
 			$i18n_title,
-			$field['id'],
+			$this->id,
 			$i18n_more
 		);
 
@@ -123,13 +122,12 @@ class RWMB_File_Field extends RWMB_Field
 	/**
 	 * Get HTML for uploaded files.
 	 * @param array $files List of uploaded files
-	 * @param array $field Field parameters
 	 * @return string
 	 */
-	protected static function get_uploaded_files( $files, $field )
+	protected function get_uploaded_files( $files )
 	{
-		$reorder_nonce = wp_create_nonce( "rwmb-reorder-files_{$field['id']}" );
-		$delete_nonce  = wp_create_nonce( "rwmb-delete-file_{$field['id']}" );
+		$reorder_nonce = wp_create_nonce( "rwmb-reorder-files_{$this->id}" );
+		$delete_nonce  = wp_create_nonce( "rwmb-delete-file_{$this->id}" );
 
 		$classes = 'rwmb-uploaded';
 		if ( count( $files ) <= 0 )
@@ -137,17 +135,17 @@ class RWMB_File_Field extends RWMB_Field
 
 		foreach ( (array) $files as $k => $file )
 		{
-			$files[$k] = self::call( $field, 'file_html', $file );
+			$files[$k] = $this->file_html( $file );
 		}
 		return sprintf(
 			'<ul class="%s" data-field_id="%s" data-delete_nonce="%s" data-reorder_nonce="%s" data-force_delete="%s" data-max_file_uploads="%s" data-mime_type="%s">%s</ul>',
 			$classes,
-			$field['id'],
+			$this->id,
 			$delete_nonce,
 			$reorder_nonce,
-			$field['force_delete'] ? 1 : 0,
-			$field['max_file_uploads'],
-			$field['mime_type'],
+			$this->force_delete ? 1 : 0,
+			$this->max_file_uploads,
+			$this->mime_type,
 			implode( '', $files )
 		);
 	}
@@ -191,17 +189,16 @@ class RWMB_File_Field extends RWMB_Field
 	 * @param mixed $new
 	 * @param mixed $old
 	 * @param int   $post_id
-	 * @param array $field
 	 *
 	 * @return array|mixed
 	 */
-	public static function value( $new, $old, $post_id, $field )
+	public function value( $new, $old, $post_id )
 	{
-		if ( empty( $_FILES[$field['id']] ) )
+		if ( empty( $_FILES[$this->id] ) )
 			return $new;
 
 		$new   = array();
-		$files = self::transform( $_FILES[$field['id']] );
+		$files = self::transform( $_FILES[$this->id] );
 		foreach ( $files as $file )
 		{
 			$new[] = self::upload( $file, $post_id );
@@ -278,25 +275,24 @@ class RWMB_File_Field extends RWMB_Field
 	/**
 	 * Get the field value. Return meaningful info of the files.
 	 *
-	 * @param  array    $field   Field parameters
 	 * @param  array    $args    Not used for this field
 	 * @param  int|null $post_id Post ID. null for current post. Optional.
 	 *
 	 * @return mixed Full info of uploaded files
 	 */
-	public static function get_value( $field, $args = array(), $post_id = null )
+	public function get_value( $args = array(), $post_id = null )
 	{
 		$value = parent::get_value( $field, $args, $post_id );
-		if ( ! $field['clone'] )
+		if ( ! $this->clone )
 		{
-			$value = self::call( 'files_info', $field, $value, $args );
+			$value = $this->files_info( $value, $args );
 		}
 		else
 		{
 			$return = array();
 			foreach ( $value as $subvalue )
 			{
-				$return[] = self::call( 'files_info', $field, $subvalue, $args );
+				$return[] = $this->files_info( $subvalue, $args );
 			}
 			$value = $return;
 		}
@@ -309,17 +305,16 @@ class RWMB_File_Field extends RWMB_Field
 
 	/**
 	 * Get uploaded files information
-	 * @param array $field Field parameter
 	 * @param array $files Files IDs
 	 * @param array $args  Additional arguments (for image size)
 	 * @return array
 	 */
-	public static function files_info( $field, $files, $args )
+	public function files_info( $files, $args )
 	{
 		$return = array();
 		foreach ( (array) $files as $file )
 		{
-			if ( $info = self::call( $field, 'file_info', $file, $args ) )
+			if ( $info = $this->file_info( $file, $args ) )
 			{
 				$return[$file] = $info;
 			}
@@ -353,20 +348,19 @@ class RWMB_File_Field extends RWMB_Field
 
 	/**
 	 * Format value for the helper functions.
-	 * @param array        $field Field parameter
 	 * @param string|array $value The field meta value
 	 * @return string
 	 */
-	public static function format_value( $field, $value )
+	public function format_value( $value )
 	{
-		if ( ! $field['clone'] )
+		if ( ! $this->clone )
 		{
-			return self::call( 'format_single_value', $field, $value );
+			return $this->format_single_value( $value );
 		}
 		$output = '<ul>';
 		foreach ( $value as $subvalue )
 		{
-			$output .= '<li>' . self::call( 'format_single_value', $field, $subvalue ) . '</li>';
+			$output .= '<li>' . $this->format_single_value( $subvalue ) . '</li>';
 		}
 		$output .= '</ul>';
 		return $output;
@@ -374,11 +368,10 @@ class RWMB_File_Field extends RWMB_Field
 
 	/**
 	 * Format a single value for the helper functions.
-	 * @param array $field Field parameter
 	 * @param array $value The value
 	 * @return string
 	 */
-	public static function format_single_value( $field, $value )
+	public function format_single_value( $value )
 	{
 		$output = '<ul>';
 		foreach ( $value as $file )

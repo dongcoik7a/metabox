@@ -22,7 +22,7 @@ class RWMB_Button_Field extends RWMB_Field
 	 * @param array $field
 	 * @return array
 	 */
-	static function normalize( $field )
+	public static function normalize( $field )
 	{
 		$field        = parent::normalize( $field );
 		$field['std'] = $field['std'] ? $field['std'] : __( 'Click me', 'meta-box' );

@@ -31,21 +31,20 @@ class RWMB_File_Input_Field extends RWMB_Field
 	 * Get field HTML
 	 *
 	 * @param mixed $meta
-	 * @param array $field
 	 *
 	 * @return string
 	 */
-	static function html( $meta, $field )
+	public function html( $meta )
 	{
 		return sprintf(
 			'<input type="text" class="rwmb-file-input" name="%s" id="%s" value="%s" placeholder="%s" size="%s">
 			<a href="#" class="rwmb-file-input-select button-primary">%s</a>
 			<a href="#" class="rwmb-file-input-remove button %s">%s</a>',
-			$field['field_name'],
-			$field['id'],
+			$this->field_name,
+			$this->id,
 			$meta,
-			$field['placeholder'],
-			$field['size'],
+			$this->placeholder,
+			$this->size,
 			__( 'Select', 'meta-box' ),
 			$meta ? '' : 'hidden',
 			__( 'Remove', 'meta-box' )
@@ -59,7 +58,7 @@ class RWMB_File_Input_Field extends RWMB_Field
 	 *
 	 * @return array
 	 */
-	static function normalize( $field )
+	public static function normalize( $field )
 	{
 		$field = parent::normalize( $field );
 		$field = wp_parse_args( $field, array(

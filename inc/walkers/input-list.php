@@ -43,12 +43,18 @@ class RWMB_Walker_Input_List extends RWMB_Walker_Base
 	{
 		$label      = $this->db_fields['label'];
 		$id         = $this->db_fields['id'];
-		$attributes = RWMB_Field::call( 'get_attributes', $this->field, $object->$id );
+		$field      = wp_parse_args( array(
+			'id'      => false,
+			'type'    => $this->field->multiple ? 'checkbox' : 'radio',
+			'checked' => in_array( $object->$id, $this->meta )
+		));
+		$input = new RWMB_Input_Field( $field );
+
+		$attributes = $this->field->get_attributes( $object->$id );
 
 		$output .= sprintf(
-			'<li><label><input %s %s>%s</label>',
-			RWMB_Field::render_attributes( $attributes ),
-			checked( in_array( $object->$id, $this->meta ), 1, false ),
+			'<li><label>%s%s</label>',
+			$input->html( $object->id ),
 			$object->$label
 		);
 	}

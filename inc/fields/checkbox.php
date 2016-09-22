@@ -17,41 +17,38 @@ class RWMB_Checkbox_Field extends RWMB_Input_Field
 	 * Get field HTML
 	 *
 	 * @param mixed $meta
-	 * @param array $field
 	 * @return string
 	 */
-	public static function html( $meta, $field )
+	public function html( $meta )
 	{
-		$attributes = self::get_attributes( $field, 1 );
+		$attributes = self::get_attributes( 1 );
 		$output     = sprintf(
 			'<input %s %s>',
 			self::render_attributes( $attributes ),
 			checked( ! empty( $meta ), 1, false )
 		);
-		if ( $field['desc'] )
+		if ( $this->desc )
 		{
-			$output = "<label id='{$field['id']}_description' class='description'>$output {$field['desc']}</label>";
+			$output = "<label id='{$this->id}_description' class='description'>$output {$this->desc}</label>";
 		}
 		return $output;
 	}
 
 	/**
 	 * Do not show field description.
-	 * @param array $field
 	 * @return string
 	 */
-	public static function element_description( $field )
+	public function element_description()
 	{
 		return '';
 	}
 
 	/**
 	 * Format a single value for the helper functions.
-	 * @param array  $field Field parameter
 	 * @param string $value The value
 	 * @return string
 	 */
-	public static function format_single_value( $field, $value )
+	public function format_single_value( $value )
 	{
 		return $value ? __( 'Yes', 'meta-box' ) : __( 'No', 'meta-box' );
 	}

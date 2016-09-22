@@ -61,29 +61,26 @@ class RWMB_Taxonomy_Field extends RWMB_Object_Choice_Field
 	}
 
 	/**
-	 * Get field names of object to be used by walker
-	 *
-	 * @return array
-	 */
-	public static function get_db_fields()
-	{
-		return array(
-			'parent' => 'parent',
-			'id'     => 'term_id',
-			'label'  => 'name',
-		);
-	}
-
-	/**
 	 * Get options for selects, checkbox list, etc via the terms
 	 *
 	 * @param array $field Field parameters
 	 *
 	 * @return array
 	 */
-	public static function get_options( $field )
+	public function get_options()
 	{
-		$options = get_terms( $field['taxonomy'], $field['query_args'] );
+		$terms = get_terms( $this->taxonomy, $this->query_args );
+		$options = array();
+
+		foreach( $terms as $term )
+		{
+			$options[ $term->term_id ] = array(
+				'parent' => $term->parent,
+				'value'  => $term->term_id,
+				'label'  => $term->name
+			);
+		}
+
 		return $options;
 	}
 
@@ -93,15 +90,14 @@ class RWMB_Taxonomy_Field extends RWMB_Object_Choice_Field
 	 * @param mixed $new
 	 * @param mixed $old
 	 * @param int   $post_id
-	 * @param array $field
 	 *
 	 * @return string
 	 */
-	public static function save( $new, $old, $post_id, $field )
+	public function save( $new, $old, $post_id )
 	{
 		$new = array_unique( array_map( 'intval', (array) $new ) );
 		$new = empty( $new ) ? null : $new;
-		wp_set_object_terms( $post_id, $new, $field['taxonomy'] );
+		wp_set_object_terms( $post_id, $new, $this->taxonomy );
 	}
 
 	/**
@@ -109,13 +105,12 @@ class RWMB_Taxonomy_Field extends RWMB_Object_Choice_Field
 	 *
 	 * @param int   $post_id
 	 * @param bool  $saved
-	 * @param array $field
 	 *
 	 * @return array
 	 */
-	public static function meta( $post_id, $saved, $field )
+	public function meta( $post_id, $saved )
 	{
-		$meta = get_the_terms( $post_id, $field['taxonomy'] );
+		$meta = get_the_terms( $post_id, $this->taxonomy );
 		$meta = (array) $meta;
 		$meta = wp_list_pluck( $meta, 'term_id' );
 
@@ -126,18 +121,17 @@ class RWMB_Taxonomy_Field extends RWMB_Object_Choice_Field
 	 * Get the field value
 	 * Return list of post term objects
 	 *
-	 * @param  array    $field   Field parameters
 	 * @param  array    $args    Additional arguments. Rarely used. See specific fields for details
 	 * @param  int|null $post_id Post ID. null for current post. Optional.
 	 *
 	 * @return array List of post term objects
 	 */
-	public static function get_value( $field, $args = array(), $post_id = null )
+	public function get_value( $args = array(), $post_id = null )
 	{
-		$value = get_the_terms( $post_id, $field['taxonomy'] );
+		$value = get_the_terms( $post_id, $this->taxonomy );
 
 		// Get single value if necessary
-		if ( ! $field['clone'] && ! $field['multiple'] && is_array( $value ) )
+		if ( ! $this->clone && ! $this->multiple && is_array( $value ) )
 		{
 			$value = reset( $value );
 		}
@@ -148,11 +142,10 @@ class RWMB_Taxonomy_Field extends RWMB_Object_Choice_Field
 	 * Get option label
 	 *
 	 * @param string   $value Option value
-	 * @param array    $field Field parameter
 	 *
 	 * @return string
 	 */
-	public static function get_option_label( $field, $value )
+	public function get_option_label( $value )
 	{
 		return sprintf(
 			'<a href="%s" title="%s">%s</a>',

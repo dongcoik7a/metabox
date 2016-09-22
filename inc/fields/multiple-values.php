@@ -17,7 +17,7 @@ abstract class RWMB_Multiple_Values_Field extends RWMB_Field
 	 *
 	 * @return array
 	 */
-	static function normalize( $field )
+	public static function normalize( $field )
 	{
 		$field               = parent::normalize( $field );
 		$field['multiple']   = true;
@@ -34,8 +34,8 @@ abstract class RWMB_Multiple_Values_Field extends RWMB_Field
 	 * @param string $value The value
 	 * @return string
 	 */
-	static function format_single_value( $field, $value )
+	function format_single_value( $value )
 	{
-		return $field['options'][$value];
+		return $this->options[$value];
 	}
 }

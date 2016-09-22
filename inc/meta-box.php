@@ -32,7 +32,7 @@ class RW_Meta_Box
 	public function __construct( $meta_box )
 	{
 		$this->meta_box = self::normalize( $meta_box );
-		$this->fields   = self::register_fields( $this->meta_box['fields'] );
+		$this->fields   = self::create_fields( $this->meta_box['fields'] );
 
 		// Allow users to show/hide meta box
 		// 1st action applies to all meta boxes
@@ -271,11 +271,11 @@ class RW_Meta_Box
 	 * @param array $fields Array of fields
 	 * @return array $fields Normalized fields
 	 */
-	public static function register_fields( $fields )
+	public static function create_fields( $fields )
 	{
 		foreach ( $fields as $k => $field )
 		{
-			$fields[$k] = RWMB_Field::register( $field );
+			$fields[$k] = RWMB_Field::create( $field );
 		}
 
 		return $fields;

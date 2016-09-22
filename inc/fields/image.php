@@ -40,11 +40,10 @@ class RWMB_Image_Field extends RWMB_File_Field
 
 	/**
 	 * Format a single value for the helper functions.
-	 * @param array $field Field parameter
 	 * @param array $value The value
 	 * @return string
 	 */
-	public static function format_single_value( $field, $value )
+	public function format_single_value( $value )
 	{
 		$output = '<ul>';
 		foreach ( $value as $file )

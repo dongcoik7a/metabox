@@ -45,7 +45,7 @@ class RWMB_Fieldset_Text_Field extends RWMB_Text_Field
 	 *
 	 * @return array
 	 */
-	public function normalize( $field )
+	public static function normalize( $field )
 	{
 		$field                       = parent::normalize( $field );
 		$field['multiple']           = false;

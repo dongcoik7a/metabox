@@ -84,17 +84,16 @@ class RWMB_Datetime_Field extends RWMB_Text_Field
 	 * Get field HTML
 	 *
 	 * @param mixed $meta
-	 * @param array $field
 	 *
 	 * @return string
 	 */
-	public static function html( $meta, $field )
+	public function html( $meta )
 	{
 		$output = '';
 
-		if ( $field['timestamp'] )
+		if ( $this->timestamp )
 		{
-			$name  = $field['field_name'];
+			$name  = $this->field_name;
 			$field = wp_parse_args( array( 'field_name' => $name . '[formatted]' ), $field );
 			$output .= sprintf(
 				'<input type="hidden" name="%s" class="rwmb-datetime-timestamp" value="%s">',
@@ -104,9 +103,9 @@ class RWMB_Datetime_Field extends RWMB_Text_Field
 			$meta = isset( $meta['formatted'] ) ? $meta['formatted'] : '';
 		}
 
-		$output .= parent::html( $meta, $field );
+		$output .= parent::html( $meta );
 
-		if ( $field['inline'] )
+		if ( $this->inline )
 		{
 			$output .= '<div class="rwmb-datetime-inline"></div>';
 		}
@@ -116,18 +115,17 @@ class RWMB_Datetime_Field extends RWMB_Text_Field
 
 	/**
 	 * Calculates the timestamp from the datetime string and returns it
-	 * if $field['timestamp'] is set or the datetime string if not
+	 * if $this->timestamp is set or the datetime string if not
 	 *
 	 * @param mixed $new
 	 * @param mixed $old
 	 * @param int   $post_id
-	 * @param array $field
 	 *
 	 * @return string|int
 	 */
-	public static function value( $new, $old, $post_id, $field )
+	public function value( $new, $old, $post_id )
 	{
-		return  $field['timestamp'] ? $new['timestamp'] : $new;
+		return  $this->timestamp ? $new['timestamp'] : $new;
 	}
 
 	/**
@@ -135,16 +133,15 @@ class RWMB_Datetime_Field extends RWMB_Text_Field
 	 *
 	 * @param int   $post_id
 	 * @param bool  $saved
-	 * @param array $field
 	 *
 	 * @return mixed
 	 */
-	public static function meta( $post_id, $saved, $field )
+	public function meta( $post_id, $saved )
 	{
-		$meta = parent::meta( $post_id, $saved, $field );
-		if ( $field['timestamp'] )
+		$meta = parent::meta( $post_id, $saved );
+		if ( $this->timestamp )
 		{
-			$meta = self::prepare_meta( $meta, $field );
+			$meta = $this->prepare_meta( $meta );
 		}
 		return $meta;
 	}
@@ -155,7 +152,7 @@ class RWMB_Datetime_Field extends RWMB_Text_Field
 	 * @param array        $field Field parameter
 	 * @return array
 	 */
-	protected static function prepare_meta( $meta, $field )
+	protected function prepare_meta( $meta )
 	{
 		if ( is_array( $meta ) )
 		{
@@ -163,14 +160,13 @@ class RWMB_Datetime_Field extends RWMB_Text_Field
 		}
 		return array(
 			'timestamp' => $meta ? $meta : null,
-			'formatted' => $meta ? date( self::call( 'translate_format', $field ), intval( $meta ) ) : '',
+			'formatted' => $meta ? date( $this->translate_format(), intval( $meta ) ) : '',
 		);
 	}
 
 	/**
 	 * Normalize parameters for field
 	 *
-	 * @param array $field
 	 * @return array
 	 */
 	public static function normalize( $field )
@@ -205,16 +201,15 @@ class RWMB_Datetime_Field extends RWMB_Text_Field
 	/**
 	 * Get the attributes for a field
 	 *
-	 * @param array $field
 	 * @param mixed $value
 	 *
 	 * @return array
 	 */
-	public static function get_attributes( $field, $value = null )
+	public function get_attributes( $value = null )
 	{
-		$attributes = parent::get_attributes( $field, $value );
+		$attributes = parent::get_attributes( $value );
 		$attributes = wp_parse_args( $attributes, array(
-			'data-options' => wp_json_encode( $field['js_options'] ),
+			'data-options' => wp_json_encode( $this->js_options ),
 		) );
 		$attributes['type'] = 'text';
 
@@ -225,14 +220,13 @@ class RWMB_Datetime_Field extends RWMB_Text_Field
 	 * Returns a date() compatible format string from the JavaScript format
 	 *
 	 * @link http://www.php.net/manual/en/function.date.php
-	 * @param array $field
 	 *
 	 * @return string
 	 */
-	public static function translate_format( $field )
+	public function translate_format()
 	{
-		return strtr( $field['js_options']['dateFormat'], self::$date_formats )
-		. $field['js_options']['separator']
-		. strtr( $field['js_options']['timeFormat'], self::$time_formats );
+		return strtr( $this->js_options['dateFormat'], self::$date_formats )
+		. $this->js_options['separator']
+		. strtr( $this->js_options['timeFormat'], self::$time_formats );
 	}
 }

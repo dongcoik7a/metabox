@@ -8,17 +8,19 @@ abstract class RWMB_Object_Choice_Field extends RWMB_Choice_Field
 	/**
 	 * Get field HTML
 	 *
-	 * @param mixed $options
-	 * @param mixed $db_fields
 	 * @param mixed $meta
-	 * @param array $field
 	 * @return string
 	 */
-	public static function walk( $field, $options, $db_fields, $meta )
+	public function html( $meta )
 	{
-		return call_user_func( array( self::get_type_class( $field ), 'walk' ), $field, $options, $db_fields, $meta );
+		$class_name      = $this-> get_type_class();
+		$options         = $this->get_options();
+		$options         = $this->filter_options( $options );
+		$args            = $this->field;
+		$args['options'] = $options;
+		$field           = new $class_name( $args );
+		return $field->html( $meta );
 	}
-
 	/**
 	 * Normalize parameters for field
 	 *
@@ -48,40 +50,9 @@ abstract class RWMB_Object_Choice_Field extends RWMB_Choice_Field
 		{
 			$field['multiple'] = true;
 		}
-		return call_user_func( array( self::get_type_class( $field ), 'normalize' ), $field );
-	}
 
-	/**
-	 * Get the attributes for a field
-	 *
-	 * @param array $field
-	 * @param mixed $value
-	 *
-	 * @return array
-	 */
-	public static function get_attributes( $field, $value = null )
-	{
-		$attributes = call_user_func( array( self::get_type_class( $field ), 'get_attributes' ), $field, $value );
-		if ( 'select_advanced' == $field['field_type'] )
-		{
-			$attributes['class'] .= ' rwmb-select_advanced';
-		}
-		return $attributes;
+		return $field;
 	}
-
-	/**
-	 * Get field names of object to be used by walker
-	 * @return array
-	 */
-	public static function get_db_fields()
-	{
-		return array(
-			'parent' => '',
-			'id'     => '',
-			'label'  => '',
-		);
-	}
-
 
 	/**
 	 * Enqueue scripts and styles
@@ -96,15 +67,14 @@ abstract class RWMB_Object_Choice_Field extends RWMB_Choice_Field
 
 	/**
 	 * Get correct rendering class for the field.
-	 * @param array $field Field parameter
 	 * @return string
 	 */
-	protected static function get_type_class( $field )
+	protected function get_type_class()
 	{
-		if ( in_array( $field['field_type'], array( 'checkbox_list', 'radio_list' ) ) )
+		if ( in_array( $field->field_type, array( 'checkbox_list', 'radio_list' ) ) )
 		{
 			return 'RWMB_Input_List_Field';
 		}
-		return self::get_class_name( array( 'type' => $field['field_type'] ) );
+		return self::get_class_name( $field->field_type );
 	}
 }

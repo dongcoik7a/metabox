@@ -9,22 +9,21 @@ abstract class RWMB_Key_Value_Field extends RWMB_Text_Field
 	 * Get field HTML
 	 *
 	 * @param mixed $meta
-	 * @param array $field
 	 * @return string
 	 */
-	static function html( $meta, $field )
+	function html( $meta )
 	{
 		// Key
 		$key                       = isset( $meta[0] ) ? $meta[0] : '';
-		$attributes                = self::get_attributes( $field, $key );
-		$attributes['placeholder'] = $field['placeholder']['key'];
+		$attributes                = $this->get_attributes( $field, $key );
+		$attributes['placeholder'] = $this->placeholder['key'];
 		$html                      = sprintf( '<input %s>', self::render_attributes( $attributes ) );
 
 		// Value
 		$val                       = isset( $meta[1] ) ? $meta[1] : '';
-		$attributes                = self::get_attributes( $field, $val );
-		$attributes['placeholder'] = $field['placeholder']['value'];
-		$html .= sprintf( '<input %s>', self::render_attributes( $attributes ) );
+		$attributes                = $this->get_attributes( $val );
+		$attributes['placeholder'] = $this->placeholder['value'];
+		$html .= sprintf( '<input %s>', $this->render_attributes( $attributes ) );
 
 		return $html;
 	}
@@ -33,14 +32,13 @@ abstract class RWMB_Key_Value_Field extends RWMB_Text_Field
 	 * Show begin HTML markup for fields
 	 *
 	 * @param mixed $meta
-	 * @param array $field
 	 * @return string
 	 */
-	static function begin_html( $meta, $field )
+	function begin_html( $meta )
 	{
-		$desc = $field['desc'] ? "<p id='{$field['id']}_description' class='description'>{$field['desc']}</p>" : '';
+		$desc = $this->desc ? "<p id='{$this->id}_description' class='description'>{$this->desc}</p>" : '';
 
-		if ( empty( $field['name'] ) )
+		if ( empty( $this->name ) )
 			return '<div class="rwmb-input">' . $desc;
 
 		return sprintf(
@@ -49,8 +47,8 @@ abstract class RWMB_Key_Value_Field extends RWMB_Text_Field
 			</div>
 			<div class="rwmb-input">
 			%s',
-			$field['id'],
-			$field['name'],
+			$this->id,
+			$this->name,
 			$desc
 		);
 	}
@@ -71,7 +69,7 @@ abstract class RWMB_Key_Value_Field extends RWMB_Text_Field
 	 * @param mixed $meta
 	 * @return mixed
 	 */
-	static function esc_meta( $meta )
+	public function esc_meta( $meta )
 	{
 		foreach ( (array) $meta as $k => $pairs )
 		{
@@ -90,7 +88,7 @@ abstract class RWMB_Key_Value_Field extends RWMB_Text_Field
 	 *
 	 * @return string
 	 */
-	static function value( $new, $old, $post_id, $field )
+	public function value( $new, $old, $post_id )
 	{
 		foreach ( $new as &$arr )
 		{
@@ -107,7 +105,7 @@ abstract class RWMB_Key_Value_Field extends RWMB_Text_Field
 	 * @param array $field
 	 * @return array
 	 */
-	static function normalize( $field )
+	public static function normalize( $field )
 	{
 		$field                       = parent::normalize( $field );
 		$field['clone']              = true;
@@ -122,11 +120,10 @@ abstract class RWMB_Key_Value_Field extends RWMB_Text_Field
 
 	/**
 	 * Format value for the helper functions.
-	 * @param array        $field Field parameter
 	 * @param string|array $value The field meta value
 	 * @return string
 	 */
-	public static function format_value( $field, $value )
+	public function format_value( $value )
 	{
 		$output = '<ul>';
 		foreach ( $value as $subvalue )

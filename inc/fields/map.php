@@ -34,23 +34,22 @@ class RWMB_Map_Field extends RWMB_Field
 	 * Get field HTML
 	 *
 	 * @param mixed $meta
-	 * @param array $field
 	 *
 	 * @return string
 	 */
-	static function html( $meta, $field )
+	function html( $meta )
 	{
 		$html = '<div class="rwmb-map-field">';
 
 		$html .= sprintf(
 			'<div class="rwmb-map-canvas" data-default-loc="%s"></div>
 			<input type="hidden" name="%s" class="rwmb-map-coordinate" value="%s">',
-			esc_attr( $field['std'] ),
-			esc_attr( $field['field_name'] ),
+			esc_attr( $this->std ),
+			esc_attr( $this->field_name ),
 			esc_attr( $meta )
 		);
 
-		if ( $address = $field['address_field'] )
+		if ( $address = $this->address_field )
 		{
 			$html .= sprintf(
 				'<button class="button rwmb-map-goto-address-button" value="%s">%s</button>',
@@ -91,15 +90,14 @@ class RWMB_Map_Field extends RWMB_Field
 	 * The difference between this function and 'meta' function is 'meta' function always returns the escaped value
 	 * of the field saved in the database, while this function returns more meaningful value of the field
 	 *
-	 * @param  array    $field   Field parameters
 	 * @param  array    $args    Not used for this field
 	 * @param  int|null $post_id Post ID. null for current post. Optional.
 	 *
 	 * @return mixed Array(latitude, longitude, zoom)
 	 */
-	static function get_value( $field, $args = array(), $post_id = null )
+	function get_value( $args = array(), $post_id = null )
 	{
-		$value = parent::get_value( $field, $args, $post_id );
+		$value = parent::get_value( $args, $post_id );
 		list( $latitude, $longitude, $zoom ) = explode( ',', $value . ',,' );
 		return compact( 'latitude', 'longitude', 'zoom' );
 	}
@@ -108,15 +106,14 @@ class RWMB_Map_Field extends RWMB_Field
 	 * Output the field value
 	 * Display Google maps
 	 *
-	 * @param  array    $field   Field parameters
 	 * @param  array    $args    Additional arguments. Not used for these fields.
 	 * @param  int|null $post_id Post ID. null for current post. Optional.
 	 *
 	 * @return mixed Field value
 	 */
-	static function the_value( $field, $args = array(), $post_id = null )
+	function the_value( $args = array(), $post_id = null )
 	{
-		$value = self::get_value( $field, $args, $post_id );
+		$value = self::get_value( $args, $post_id );
 		if ( ! $value['latitude'] || ! $value['longitude'] )
 		{
 			return '';
@@ -134,7 +131,7 @@ class RWMB_Map_Field extends RWMB_Field
 		 * Allows developers load more libraries via a filter.
 		 * @link https://developers.google.com/maps/documentation/javascript/libraries
 		 */
-		$google_maps_url = add_query_arg( 'key', $field['api_key'], 'https://maps.google.com/maps/api/js' );
+		$google_maps_url = add_query_arg( 'key', $this->api_key, 'https://maps.google.com/maps/api/js' );
 		$google_maps_url = apply_filters( 'rwmb_google_maps_url', $google_maps_url );
 		wp_register_script( 'google-maps', esc_url_raw( $google_maps_url ), array(), '', true );
 		wp_enqueue_script( 'rwmb-map-frontend', RWMB_JS_URL . 'map-frontend.js', array( 'google-maps' ), '', true );

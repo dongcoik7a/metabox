@@ -32,9 +32,9 @@ class RWMB_Helper
 			}
 			foreach ( $meta_box['fields'] as $field )
 			{
-				if ( ! empty( $field['id'] ) )
+				if ( ! empty( $field->id ) )
 				{
-					self::$fields[$post_type][$field['id']] = $field;
+					self::$fields[$post_type][$field->id] = $field;
 				}
 			}
 		}
@@ -61,7 +61,7 @@ class RWMB_Helper
 			return false;
 		}
 		$field = $fields[$field_id];
-		return RWMB_Field::call( 'normalize', $field );
+		return $field;
 	}
 
 	/**
@@ -81,11 +81,6 @@ class RWMB_Helper
 			'multiple' => false,
 			'clone'    => false,
 		) );
-		// Always set 'multiple' true for following field types
-		if ( in_array( $args['type'], array( 'checkbox_list', 'autocomplete', 'file', 'file_advanced', 'image', 'image_advanced', 'plupload_image', 'thickbox_image' ) ) )
-		{
-			$args['multiple'] = true;
-		}
 
 		$field = array(
 			'id'       => $key,
@@ -94,39 +89,32 @@ class RWMB_Helper
 			'multiple' => $args['multiple'],
 		);
 
+		if( 'map' === $args['type'] )
+		{
+			$field = wp_parse_args( array(
+				'multiple' => false,
+				'clone'    => false,
+			), $field );
+		}
+
+		$class_name = RWMB_Field::get_class_name( $args['type'] );
+		$field = new $class_name( $field );
+
 		switch ( $args['type'] )
 		{
 			case 'taxonomy_advanced':
+			case 'taxonomy':
 				if ( empty( $args['taxonomy'] ) )
 				{
-					break;
+					$meta =  array();
 				}
-				$meta     = get_post_meta( $post_id, $key, ! $args['multiple'] );
-				$term_ids = wp_parse_id_list( $meta );
-				// Allow to pass more arguments to "get_terms"
-				$func_args = wp_parse_args( array(
-					'include'    => $term_ids,
-					'hide_empty' => false,
-				), $args );
-				unset( $func_args['type'], $func_args['taxonomy'], $func_args['multiple'] );
-				$meta = get_terms( $args['taxonomy'], $func_args );
-				break;
-			case 'taxonomy':
-				$meta = empty( $args['taxonomy'] ) ? array() : get_the_terms( $post_id, $args['taxonomy'] );
 				break;
 			case 'map':
-				$field = array(
-					'id'       => $key,
-					'multiple' => false,
-					'clone'    => false,
-				);
-				$meta  = RWMB_Map_Field::the_value( $field, $args, $post_id );
-				break;
 			case 'oembed':
-				$meta = RWMB_OEmbed_Field::the_value( $field, $args, $post_id );
+				$meta  = $field->the_value( $field, $args, $post_id );
 				break;
 			default:
-				$meta = RWMB_Field::call( 'get_value', $field, $args, $post_id );
+				$meta = $field->get_value( $args, $post_id );
 		}
 		return apply_filters( 'rwmb_meta', $meta, $key, $args, $post_id );
 	}

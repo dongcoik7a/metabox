@@ -8,13 +8,12 @@ class RWMB_Textarea_Field extends RWMB_Field
 	 * Get field HTML
 	 *
 	 * @param mixed $meta
-	 * @param array $field
 	 *
 	 * @return string
 	 */
-	static function html( $meta, $field )
+	static function html( $meta )
 	{
-		$attributes = self::get_attributes( $field, $meta );
+		$attributes = $this->get_attributes( $meta );
 		return sprintf(
 			'<textarea %s>%s</textarea>',
 			self::render_attributes( $attributes ),
@@ -28,7 +27,7 @@ class RWMB_Textarea_Field extends RWMB_Field
 	 * @param mixed $meta
 	 * @return mixed
 	 */
-	static function esc_meta( $meta )
+	function esc_meta( $meta )
 	{
 		return is_array( $meta ) ? array_map( 'esc_textarea', $meta ) : esc_textarea( $meta );
 	}
@@ -56,21 +55,20 @@ class RWMB_Textarea_Field extends RWMB_Field
 	/**
 	 * Get the attributes for a field
 	 *
-	 * @param array $field
 	 * @param mixed $value
 	 *
 	 * @return array
 	 */
-	static function get_attributes( $field, $value = null )
+	function get_attributes( $value = null )
 	{
 		$attributes = parent::get_attributes( $field, $value );
 		$attributes = wp_parse_args( $attributes, array(
-			'cols'        => $field['cols'],
-			'rows'        => $field['rows'],
-			'maxlength'   => $field['maxlength'],
-			'wrap'        => $field['wrap'],
-			'readonly'    => $field['readonly'],
-			'placeholder' => $field['placeholder'],
+			'cols'        => $this->cols,
+			'rows'        => $this->rows,
+			'maxlength'   => $this->maxlength,
+			'wrap'        => $this->wrap,
+			'readonly'    => $this->readonly,
+			'placeholder' => $this->placeholder,
 		) );
 		$attributes['class'] .= ' large-text';
 

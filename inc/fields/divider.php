@@ -34,7 +34,7 @@ class RWMB_Divider_Field extends RWMB_Field
 	 *
 	 * @return string
 	 */
-	static function end_html( $meta )
+	public function end_html( $meta )
 	{
 		return '';
 	}

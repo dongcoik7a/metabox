@@ -24,11 +24,10 @@ class RWMB_Slider_Field extends RWMB_Field
 	 * Get div HTML
 	 *
 	 * @param mixed $meta
-	 * @param array $field
 	 *
 	 * @return string
 	 */
-	static function html( $meta, $field )
+	public function html( $meta )
 	{		
 		return sprintf(
 			'<div class="clearfix">
@@ -36,9 +35,9 @@ class RWMB_Slider_Field extends RWMB_Field
 				<span class="rwmb-slider-value-label">%s<span>%s</span>%s</span>
 				<input type="hidden" name="%s" value="%s" class="rwmb-slider-value">
 			</div>',
-			$field['id'], esc_attr( wp_json_encode( $field['js_options'] ) ),
-			$field['prefix'], ( $meta >= 0 ) ? $meta : $field['std'], $field['suffix'],
-			$field['field_name'], ( $meta >= 0 ) ? $meta : $field['std']
+			$this->id, esc_attr( wp_json_encode( $this->js_options ) ),
+			$this->prefix, ( $meta >= 0 ) ? $meta : $this->std, $this->suffix,
+			$this->field_name, ( $meta >= 0 ) ? $meta : $this->std
 		);
 	}
 

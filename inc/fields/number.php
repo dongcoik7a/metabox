@@ -11,7 +11,7 @@ class RWMB_Number_Field extends RWMB_Input_Field
 	 *
 	 * @return array
 	 */
-	public function normalize( $field )
+	public static function normalize( $field )
 	{
 		$field = parent::normalize( $field );
 

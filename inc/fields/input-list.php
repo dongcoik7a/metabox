@@ -17,20 +17,19 @@ class RWMB_Input_List_Field extends RWMB_Choice_Field
 	 * Walk options
 	 *
 	 * @param mixed $meta
-	 * @param array $field
 	 * @param mixed $options
 	 * @param mixed $db_fields
 	 *
 	 * @return string
 	 */
-	public static function walk( $field, $options, $db_fields, $meta )
+	public function walk( $options, $db_fields, $meta )
 	{
-		$walker = new RWMB_Walker_Input_List( $db_fields, $field, $meta );
+		$walker = new RWMB_Walker_Input_List( $db_fields, $this, $meta );
 		$output = sprintf( '<ul class="rwmb-input-list %s %s">',
-			$field['collapse'] ? 'collapse' : '',
-		 	$field['inline']   ? 'inline'   : ''
+			$this->collapse ? 'collapse' : '',
+		 	$this->inline   ? 'inline'   : ''
 		);
-		$output .= $walker->walk( $options, $field['flatten'] ? - 1 : 0 );
+		$output .= $walker->walk( $options, $this->flatten ? - 1 : 0 );
 		$output .= '</ul>';
 
 		return $output;
@@ -44,7 +43,6 @@ class RWMB_Input_List_Field extends RWMB_Choice_Field
 	 */
 	public static function normalize( $field )
 	{
-		$field = $field['multiple'] ? RWMB_Multiple_Values_Field::normalize( $field ) : $field;
 		$field = RWMB_Input_Field::normalize( $field );
 		$field = parent::normalize( $field );
 		$field = wp_parse_args( $field, array(
@@ -56,23 +54,5 @@ class RWMB_Input_List_Field extends RWMB_Choice_Field
 		$field['inline'] = ! $field['multiple'] && ! isset( $field['inline'] ) ? true : $field['inline'];
 
 		return $field;
-	}
-
-	/**
-	 * Get the attributes for a field
-	 *
-	 * @param array $field
-	 * @param mixed $value
-	 *
-	 * @return array
-	 */
-	public static function get_attributes( $field, $value = null )
-	{
-		$attributes           = RWMB_Input_Field::get_attributes( $field, $value );
-		$attributes['id']     = false;
-		$attributes['type']   = $field['multiple'] ? 'checkbox' : 'radio';
-		$attributes['value']  = $value;
-
-		return $attributes;
 	}
 }

@@ -69,12 +69,11 @@ class RWMB_OEmbed_Field extends RWMB_Text_Field
 	 * Get field HTML
 	 *
 	 * @param mixed $meta
-	 * @param array $field
 	 * @return string
 	 */
-	public static function html( $meta, $field )
+	public function html( $meta )
 	{
-		return parent::html( $meta, $field ) . sprintf(
+		return parent::html( $meta ) . sprintf(
 			'<a href="#" class="show-embed button">%s</a>
 			<span class="spinner"></span>
 			<div class="embed-code">%s</div>',
@@ -86,25 +85,23 @@ class RWMB_OEmbed_Field extends RWMB_Text_Field
 	/**
 	 * Get the attributes for a field
 	 *
-	 * @param array $field
 	 * @param mixed $value
 	 *
 	 * @return array
 	 */
-	public static function get_attributes( $field, $value = null )
+	public function get_attributes( $value = null )
 	{
-		$attributes = parent::get_attributes( $field, $value );
+		$attributes = parent::get_attributes( $value );
 		$attributes['type'] = 'url';
 		return $attributes;
 	}
 
 	/**
 	 * Format a single value for the helper functions.
-	 * @param array  $field Field parameter
 	 * @param string $value The value
 	 * @return string
 	 */
-	public static function format_single_value( $field, $value )
+	public function format_single_value( $value )
 	{
 		return self::get_embed( $value );
 	}

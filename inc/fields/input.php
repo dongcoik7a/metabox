@@ -22,7 +22,7 @@ abstract class RWMB_Input_Field extends RWMB_Field
 	 *
 	 * @return array
 	 */
-	public function normalize( $field )
+	public static function normalize( $field )
 	{
 		$field = parent::normalize( $field );
 		$field = wp_parse_args( $field, array(

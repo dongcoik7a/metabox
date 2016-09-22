@@ -60,20 +60,6 @@ class RWMB_Post_Field extends RWMB_Object_Choice_Field
 	}
 
 	/**
-	 * Get field names of object to be used by walker
-	 *
-	 * @return array
-	 */
-	public static function get_db_fields()
-	{
-		return array(
-			'parent' => 'post_parent',
-			'id'     => 'ID',
-			'label'  => 'post_title',
-		);
-	}
-
-	/**
 	 * Get meta value
 	 * If field is cloneable, value is saved as a single entry in DB
 	 * Otherwise value is saved as multiple entries (for backward compatibility)
@@ -82,31 +68,39 @@ class RWMB_Post_Field extends RWMB_Object_Choice_Field
 	 *
 	 * @param $post_id
 	 * @param $saved
-	 * @param $field
 	 *
 	 * @return array
 	 */
-	public static function meta( $post_id, $saved, $field )
+	public function meta( $post_id, $saved )
 	{
-		if ( isset( $field['parent'] ) && $field['parent'] )
+		if ( isset( $this->parent ) && $this->parent )
 		{
 			$post = get_post( $post_id );
 			return $post->post_parent;
 		}
 
-		return parent::meta( $post_id, $saved, $field );
+		return parent::meta( $post_id, $saved );
 	}
 
 	/**
 	 * Get options for walker
 	 *
-	 * @param array $field
 	 * @return array
 	 */
-	public static function get_options( $field )
+	public function get_options()
 	{
-		$query = new WP_Query( $field['query_args'] );
-		return $query->have_posts() ? $query->posts : array();
+		$query = new WP_Query( $this->query_args );
+		$options = array();
+		foreach( $query->posts as $post )
+		{
+			$options[ $post->ID ] = array(
+				'parent' => $post->post_parent,
+				'value'  => $post->ID,
+				'label'  => $post->title
+			);
+		}
+
+		return $options;
 	}
 
 	/**
@@ -117,7 +111,7 @@ class RWMB_Post_Field extends RWMB_Object_Choice_Field
 	 *
 	 * @return string
 	 */
-	public static function get_option_label( $field, $value )
+	public function get_option_label( $value )
 	{
 		return sprintf(
 			'<a href="%s" title="%s">%s</a>',

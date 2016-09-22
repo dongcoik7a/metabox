@@ -31,7 +31,7 @@ class RWMB_Range_Field extends RWMB_Number_Field
 	 * @param array $field
 	 * @return array
 	 */
-	public function normalize( $field )
+	public static function normalize( $field )
 	{
 		$field = wp_parse_args( $field, array(
 			'max' => 10,

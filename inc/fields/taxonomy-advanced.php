@@ -12,11 +12,10 @@ class RWMB_Taxonomy_Advanced_Field extends RWMB_Taxonomy_Field
 	 * @param mixed $new
 	 * @param mixed $old
 	 * @param int   $post_id
-	 * @param array $field
 	 *
 	 * @return string
 	 */
-	public static function value( $new, $old, $post_id, $field )
+	public function value( $new, $old, $post_id )
 	{
 		return implode( ',', array_unique( (array) $new ) );
 	}
@@ -27,16 +26,15 @@ class RWMB_Taxonomy_Advanced_Field extends RWMB_Taxonomy_Field
 	 * @param mixed $new
 	 * @param mixed $old
 	 * @param int   $post_id
-	 * @param array $field
 	 *
 	 * @return string
 	 */
-	public static function save( $new, $old, $post_id, $field )
+	public function save( $new, $old, $post_id )
 	{
 		if ( $new )
-			update_post_meta( $post_id, $field['id'], $new );
+			update_post_meta( $post_id, $this->id, $new );
 		else
-			delete_post_meta( $post_id, $field['id'] );
+			delete_post_meta( $post_id, $this->id );
 	}
 
 	/**
@@ -44,13 +42,12 @@ class RWMB_Taxonomy_Advanced_Field extends RWMB_Taxonomy_Field
 	 *
 	 * @param int   $post_id
 	 * @param bool  $saved
-	 * @param array $field
 	 *
 	 * @return array
 	 */
-	public static function meta( $post_id, $saved, $field )
+	public function meta( $post_id, $saved )
 	{
-		$meta = get_post_meta( $post_id, $field['id'], true );
+		$meta = get_post_meta( $post_id, $this->id, true );
 		$meta = wp_parse_id_list( $meta );
 		$meta = array_filter( $meta );
 		return $meta;
@@ -60,13 +57,12 @@ class RWMB_Taxonomy_Advanced_Field extends RWMB_Taxonomy_Field
 	 * Get the field value
 	 * Return list of post term objects
 	 *
-	 * @param  array    $field   Field parameters
 	 * @param  array    $args    Additional arguments. Rarely used. See specific fields for details
 	 * @param  int|null $post_id Post ID. null for current post. Optional.
 	 *
 	 * @return array List of post term objects
 	 */
-	public static function get_value( $field, $args = array(), $post_id = null )
+	public function get_value( $args = array(), $post_id = null )
 	{
 		if ( ! $post_id )
 			$post_id = get_the_ID();
@@ -80,10 +76,10 @@ class RWMB_Taxonomy_Advanced_Field extends RWMB_Taxonomy_Field
 			'include'    => $value,
 			'hide_empty' => false,
 		), $args );
-		$value = get_terms( $field['taxonomy'], $args );
+		$value = get_terms( $this->taxonomy, $args );
 
 		// Get single value if necessary
-		if ( ! $field['clone'] && ! $field['multiple'] )
+		if ( ! $this->clone && ! $this->multiple )
 		{
 			$value = reset( $value );
 		}

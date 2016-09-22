@@ -40,22 +40,11 @@ abstract class RWMB_Field
 	 *
 	 * @return Field object
 	 */
-	public static function register( $args )
+	public static function create( $args )
 	{
 		$type       = isset( $args['type'] ) : $args['type'] : null;
 		$class_name = self::get_class_name( $type );
-		$field      = new $class_name( $args );
-		if( isset( $args['id'] ) )
-		{
-			self::$fields[ $args['id'] ] = $field;
-		}
-
-		return $field;
-	}
-
-	public static function get_field( $id )
-	{
-		return self::$fields[ $id ] ? self::$fields[ $id ] : null;
+		return new $class_name( $args );
 	}
 
 	/**
@@ -226,8 +215,8 @@ abstract class RWMB_Field
 			{
 				/**
 				 * Note: if field is clonable, $meta must be an array with values
-				 * so that the foreach loop in self::show() runs properly
-				 * @see self::show()
+				 * so that the foreach loop in $this->show() runs properly
+				 * @see $this->show()
 				 */
 				$meta = $this->clone ? array( '' ) : array();
 			}
@@ -321,7 +310,7 @@ abstract class RWMB_Field
 	 *
 	 * @return array
 	 */
-	public function normalize( $field )
+	public static function normalize( $field )
 	{
 		$field = wp_parse_args( $field, array(
 			'id'          => '',
@@ -439,7 +428,7 @@ abstract class RWMB_Field
 	 * Note: we don't echo the field value directly. We return the output HTML of field, which will be used in
 	 * rwmb_the_field function later.
 	 *
-	 * @use self::get_value()
+	 * @use $this->get_value()
 	 * @see rwmb_the_value()
 	 *
 	 * @param  array    $args    Additional arguments. Rarely used. See specific fields for details

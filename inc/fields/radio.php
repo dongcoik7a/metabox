@@ -9,7 +9,7 @@ class RWMB_Radio_Field extends RWMB_Input_List_Field
 	 * @param array $field
 	 * @return array
 	 */
-	static function normalize( $field )
+	public static function normalize( $field )
 	{
 		$field['multiple'] = false;
 		$field = parent::normalize( $field );

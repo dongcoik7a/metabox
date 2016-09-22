@@ -49,39 +49,30 @@ class RWMB_User_Field extends RWMB_Object_Choice_Field
 	/**
 	 * Get users
 	 *
-	 * @param array $field
-	 *
 	 * @return array
 	 */
-	public static function get_options( $field )
+	public function get_options()
 	{
-		$query = new WP_User_Query( $field['query_args'] );
-		return $query->get_results();
-	}
-
-	/**
-	 * Get field names of object to be used by walker
-	 *
-	 * @return array
-	 */
-	public static function get_db_fields()
-	{
-		return array(
-			'parent' => 'parent',
-			'id'     => 'ID',
-			'label'  => 'display_name',
-		);
+		$query = new WP_User_Query( $this->query_args );
+		$options = array();
+		foreach( $query->get_results() as $user )
+		{
+			$options[ $user->ID ] = array(
+				'parent' => $user->parent,
+				'value'  => $user->ID,
+				'label'  => $user->display_name
+			);
+		return $options;
 	}
 
 	/**
 	 * Get option label
 	 *
 	 * @param string   $value Option value
-	 * @param array    $field Field parameter
 	 *
 	 * @return string
 	 */
-	public static function get_option_label( $field, $value )
+	public function get_option_label( $value )
 	{
 		$user  = get_userdata( $value );
 		return '<a href="' . get_author_posts_url( $value ) . '">' . $user->display_name . '</a>';

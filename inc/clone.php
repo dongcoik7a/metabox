@@ -25,20 +25,20 @@ class RWMB_Clone
 		foreach ( $meta as $index => $sub_meta )
 		{
 			$sub_field               = $field;
-			$sub_field['field_name'] = $field['field_name'] . "[{$index}]";
+			$sub_field->field_name = $field->field_name . "[{$index}]";
 			if ( $index > 0 )
 			{
-				if ( isset( $sub_field['address_field'] ) )
-					$sub_field['address_field'] = $field['address_field'] . "_{$index}";
-				$sub_field['id'] = $field['id'] . "_{$index}";
+				if ( isset( $sub_field->address_field ) )
+					$sub_field->address_field = $field->address_field . "_{$index}";
+				$sub_field->id = $field->id . "_{$index}";
 			}
-			if ( $field['multiple'] )
-				$sub_field['field_name'] .= '[]';
+			if ( $field->multiple )
+				$sub_field->field_name .= '[]';
 
 			// Wrap field HTML in a div with class="rwmb-clone" if needed
-			$class     = "rwmb-clone rwmb-{$field['type']}-clone";
+			$class     = "rwmb-clone rwmb-{$field->type}-clone";
 			$sort_icon = '';
-			if ( $field['sort_clone'] )
+			if ( $field->sort_clone )
 			{
 				$class .= ' rwmb-sort-clone';
 				$sort_icon = "<a href='javascript:;' class='rwmb-clone-icon'></a>";
@@ -46,7 +46,7 @@ class RWMB_Clone
 			$input_html = "<div class='$class'>" . $sort_icon;
 
 			// Call separated methods for displaying each type of field
-			$input_html .= RWMB_Field::call( $sub_field, 'html', $sub_meta );
+			$input_html .= $sub_field->html( $sub_meta );
 			$input_html = RWMB_Field::filter( 'html', $input_html, $sub_field, $sub_meta );
 
 			// Remove clone button
@@ -74,7 +74,7 @@ class RWMB_Clone
 		foreach ( $new as $key => $value )
 		{
 			$old_value = isset( $old[$key] ) ? $old[$key] : null;
-			$value     = RWMB_Field::call( $field, 'value', $value, $old_value, $post_id );
+			$value     = $field->value( $value, $old_value, $post_id );
 			$new[$key] = RWMB_Field::filter( 'sanitize', $value, $field );
 		}
 		return $new;
@@ -87,7 +87,7 @@ class RWMB_Clone
 	 */
 	public static function add_clone_button( $field )
 	{
-		if ( ! $field['clone'] )
+		if ( ! $field->clone )
 		{
 			return '';
 		}

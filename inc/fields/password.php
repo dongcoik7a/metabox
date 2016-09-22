@@ -9,10 +9,9 @@ class RWMB_Password_Field extends RWMB_Text_Field
 	 * @param mixed $new
 	 * @param mixed $old
 	 * @param int   $post_id
-	 * @param array $field
 	 * @return string
 	 */
-	static function value( $new, $old, $post_id, $field )
+	public function value( $new, $old, $post_id )
 	{
 		$new = $new != $old ? wp_hash_password( $new ) : $new;
 		return $new;

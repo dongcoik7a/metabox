@@ -58,13 +58,12 @@ class RWMB_Select_Advanced_Field extends RWMB_Select_Field
 	/**
 	 * Get the attributes for a field
 	 *
-	 * @param array $field
 	 * @param mixed $value
 	 * @return array
 	 */
-	public static function get_attributes( $field, $value = null )
+	public function get_attributes( $value = null )
 	{
-		$attributes = parent::get_attributes( $field, $value );
+		$attributes = parent::get_attributes( $value );
 		$attributes = wp_parse_args( $attributes, array(
 			'data-options' => wp_json_encode( $field['js_options'] ),
 		) );
