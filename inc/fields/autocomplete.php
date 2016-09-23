@@ -8,7 +8,7 @@ class RWMB_Autocomplete_Field extends RWMB_Multiple_Values_Field
 	/**
 	 * Enqueue scripts and styles.
 	 */
-	static function admin_enqueue_scripts()
+	function admin_enqueue_scripts()
 	{
 		wp_enqueue_style( 'rwmb-autocomplete', RWMB_CSS_URL . 'autocomplete.css', array( 'wp-admin' ), RWMB_VER );
 		wp_enqueue_script( 'rwmb-autocomplete', RWMB_JS_URL . 'autocomplete.js', array( 'jquery-ui-autocomplete' ), RWMB_VER, true );

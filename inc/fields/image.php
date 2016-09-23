@@ -8,7 +8,7 @@ class RWMB_Image_Field extends RWMB_File_Field
 	/**
 	 * Enqueue scripts and styles.
 	 */
-	public static function admin_enqueue_scripts()
+	public function admin_enqueue_scripts()
 	{
 		parent::admin_enqueue_scripts();
 		wp_enqueue_style( 'rwmb-image', RWMB_CSS_URL . 'image.css', array(), RWMB_VER );

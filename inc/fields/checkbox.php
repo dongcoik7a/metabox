@@ -8,7 +8,7 @@ class RWMB_Checkbox_Field extends RWMB_Input_Field
 	/**
 	 * Enqueue scripts and styles.
 	 */
-	public static function admin_enqueue_scripts()
+	public function admin_enqueue_scripts()
 	{
 		wp_enqueue_style( 'rwmb-checkbox', RWMB_CSS_URL . 'checkbox.css', array(), RWMB_VER );
 	}

@@ -9,7 +9,7 @@ class RWMB_Divider_Field extends RWMB_Field
 	 *
 	 * @return void
 	 */
-	static function admin_enqueue_scripts()
+	function admin_enqueue_scripts()
 	{
 		wp_enqueue_style( 'rwmb-divider', RWMB_CSS_URL . 'divider.css', array(), RWMB_VER );
 	}

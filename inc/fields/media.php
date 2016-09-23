@@ -8,7 +8,7 @@ class RWMB_Media_Field extends RWMB_File_Field
 	/**
 	 * Enqueue scripts and styles
 	 */
-	public static function admin_enqueue_scripts()
+	public function admin_enqueue_scripts()
 	{
 		wp_enqueue_media();
 		wp_enqueue_style( 'rwmb-media', RWMB_CSS_URL . 'media.css', array(), RWMB_VER );
@@ -41,22 +41,19 @@ class RWMB_Media_Field extends RWMB_File_Field
 	/**
 	 * Add actions
 	 */
-	public static function add_actions()
+	public function add_actions()
 	{
-		$args  = func_get_args();
-		$field = reset( $args );
-		add_action( 'print_media_templates', array( self::get_class_name( $field ), 'print_templates' ) );
+		add_action( 'print_media_templates', array( __CLASS__, 'print_templates' ) );
 	}
 
 	/**
 	 * Get field HTML
 	 *
 	 * @param mixed $meta
-	 * @param array $field
 	 *
 	 * @return string
 	 */
-	public static function html( $meta, $field )
+	public function html( $meta )
 	{
 		$meta       = (array) $meta;
 		$meta       = implode( ',', $meta );
@@ -66,10 +63,10 @@ class RWMB_Media_Field extends RWMB_File_Field
 			'<input %s>
 			<div class="rwmb-media-view" data-mime-type="%s" data-max-files="%s" data-force-delete="%s" data-show-status="%s"></div>',
 			self::render_attributes( $attributes ),
-			$field['mime_type'],
-			$field['max_file_uploads'],
-			$field['force_delete'] ? 'true' : 'false',
-			$field['max_status']
+			$this->mime_type,
+			$this->max_file_uploads,
+			$this->force_delete ? 'true' : 'false',
+			$this->max_status
 		);
 
 		return $html;
@@ -101,16 +98,15 @@ class RWMB_Media_Field extends RWMB_File_Field
 	/**
 	 * Get the attributes for a field
 	 *
-	 * @param array $field
 	 * @param mixed $value
 	 *
 	 * @return array
 	 */
-	public static function get_attributes( $field, $value = null )
+	public function get_attributes( $field, $value = null )
 	{
 		$attributes         = parent::get_attributes( $field, $value );
 		$attributes['type'] = 'hidden';
-		$attributes['name'] .= ! $field['clone'] && $field['multiple'] ? '[]' : '';
+		$attributes['name'] .= ! $this->clone && $this->multiple ? '[]' : '';
 		$attributes['disabled'] = true;
 		$attributes['id']       = false;
 		$attributes['value']    = $value;
@@ -147,11 +143,10 @@ class RWMB_Media_Field extends RWMB_File_Field
 	 * @param $new
 	 * @param $old
 	 * @param $post_id
-	 * @param $field
 	 */
-	public static function save( $new, $old, $post_id, $field )
+	public function save( $new, $old, $post_id )
 	{
-		delete_post_meta( $post_id, $field['id'] );
+		delete_post_meta( $post_id, $this->id );
 		parent::save( $new, array(), $post_id, $field );
 	}
 

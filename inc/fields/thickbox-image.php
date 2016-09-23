@@ -8,7 +8,7 @@ class RWMB_Thickbox_Image_Field extends RWMB_Image_Field
 	/**
 	 * Add custom actions for the field.
 	 */
-	public static function add_actions()
+	public function add_actions()
 	{
 		parent::add_actions();
 		add_filter( 'get_media_item_args', array( __CLASS__, 'allow_img_insertion' ) );
@@ -30,7 +30,7 @@ class RWMB_Thickbox_Image_Field extends RWMB_Image_Field
 	/**
 	 * Enqueue scripts and styles
 	 */
-	public static function admin_enqueue_scripts()
+	public function admin_enqueue_scripts()
 	{
 		parent::admin_enqueue_scripts();
 

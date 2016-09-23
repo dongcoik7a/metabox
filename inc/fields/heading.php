@@ -10,7 +10,7 @@ class RWMB_Heading_Field extends RWMB_Field
 	 *
 	 * @return void
 	 */
-	static function admin_enqueue_scripts()
+	function admin_enqueue_scripts()
 	{
 		wp_enqueue_style( 'rwmb-heading', RWMB_CSS_URL . 'heading.css', array(), RWMB_VER );
 	}

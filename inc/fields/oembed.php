@@ -8,7 +8,7 @@ class RWMB_OEmbed_Field extends RWMB_Text_Field
 	/**
 	 * Enqueue scripts and styles
 	 */
-	public static function admin_enqueue_scripts()
+	public function admin_enqueue_scripts()
 	{
 		wp_enqueue_style( 'rwmb-oembed', RWMB_CSS_URL . 'oembed.css' );
 		wp_enqueue_script( 'rwmb-oembed', RWMB_JS_URL . 'oembed.js', array(), RWMB_VER, true );
@@ -17,7 +17,7 @@ class RWMB_OEmbed_Field extends RWMB_Text_Field
 	/**
 	 * Add actions
 	 */
-	public static function add_actions()
+	public function add_actions()
 	{
 		add_action( 'wp_ajax_rwmb_get_embed', array( __CLASS__, 'wp_ajax_get_embed' ) );
 	}

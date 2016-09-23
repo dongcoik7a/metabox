@@ -14,7 +14,7 @@ class RWMB_Wysiwyg_Field extends RWMB_Field
 	/**
 	 * Enqueue scripts and styles.
 	 */
-	static function admin_enqueue_scripts()
+	function admin_enqueue_scripts()
 	{
 		wp_enqueue_style( 'rwmb-wysiwyg', RWMB_CSS_URL . 'wysiwyg.css', array(), RWMB_VER );
 		wp_enqueue_script( 'rwmb-wysiwyg', RWMB_JS_URL . 'wysiwyg.js', array( 'jquery' ), RWMB_VER, true );

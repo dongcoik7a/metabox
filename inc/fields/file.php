@@ -8,7 +8,7 @@ class RWMB_File_Field extends RWMB_Field
 	/**
 	 * Enqueue scripts and styles
 	 */
-	public static function admin_enqueue_scripts()
+	public function admin_enqueue_scripts()
 	{
 		wp_enqueue_style( 'rwmb-file', RWMB_CSS_URL . 'file.css', array(), RWMB_VER );
 		wp_enqueue_script( 'rwmb-file', RWMB_JS_URL . 'file.js', array( 'jquery' ), RWMB_VER, true );
@@ -30,7 +30,7 @@ class RWMB_File_Field extends RWMB_Field
 	/**
 	 * Add custom actions
 	 */
-	public static function add_actions()
+	public function add_actions()
 	{
 		add_action( 'post_edit_form_tag', array( __CLASS__, 'post_edit_form_tag' ) );
 		add_action( 'wp_ajax_rwmb_delete_file', array( __CLASS__, 'wp_ajax_delete_file' ) );

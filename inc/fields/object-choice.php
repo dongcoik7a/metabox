@@ -57,7 +57,7 @@ abstract class RWMB_Object_Choice_Field extends RWMB_Choice_Field
 	/**
 	 * Enqueue scripts and styles
 	 */
-	public static function admin_enqueue_scripts()
+	public function admin_enqueue_scripts()
 	{
 		RWMB_Input_List_Field::admin_enqueue_scripts();
 		RWMB_Select_Field::admin_enqueue_scripts();

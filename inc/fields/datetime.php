@@ -73,9 +73,9 @@ class RWMB_Datetime_Field extends RWMB_Text_Field
 	/**
 	 * Enqueue scripts and styles
 	 */
-	public static function admin_enqueue_scripts()
+	public function admin_enqueue_scripts()
 	{
-		self::admin_register_scripts();
+		$this->admin_register_scripts();
 		wp_enqueue_style( 'jquery-ui-timepicker' );
 		wp_enqueue_script( 'rwmb-datetime' );
 	}

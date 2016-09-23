@@ -7,7 +7,7 @@ class RWMB_File_Upload_Field extends RWMB_Media_Field
 	/**
 	 * Enqueue scripts and styles
 	 */
-	public static function admin_enqueue_scripts()
+	public function admin_enqueue_scripts()
 	{
 		parent::admin_enqueue_scripts();
 		wp_enqueue_style( 'rwmb-upload', RWMB_CSS_URL . 'upload.css', array( 'rwmb-media' ), RWMB_VER );

@@ -8,7 +8,7 @@ class RWMB_Color_Field extends RWMB_Text_Field
 	/**
 	 * Enqueue scripts and styles
 	 */
-	static function admin_enqueue_scripts()
+	function admin_enqueue_scripts()
 	{
 		wp_enqueue_style( 'rwmb-color', RWMB_CSS_URL . 'color.css', array( 'wp-color-picker' ), RWMB_VER );
 		wp_enqueue_script( 'rwmb-color', RWMB_JS_URL . 'color.js', array( 'wp-color-picker' ), RWMB_VER, true );

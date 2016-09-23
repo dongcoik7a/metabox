@@ -38,6 +38,8 @@ class RWMB_Helper
 				}
 			}
 		}
+
+		return self::$fields[$post_type];
 	}
 
 	/**
@@ -53,15 +55,10 @@ class RWMB_Helper
 		$post_type = get_post_type( $post_id );
 		if ( empty( self::$fields[$post_type] ) )
 		{
-			self::hash_fields( $post_type );
+			$fields = self::hash_fields( $post_type );
 		}
-		$fields = self::$fields[$post_type];
-		if ( ! isset( $fields[$field_id] ) )
-		{
-			return false;
-		}
-		$field = $fields[$field_id];
-		return $field;
+
+		return  isset( $fields[$field_id]  ? $fields[$field_id] : false;
 	}
 
 	/**

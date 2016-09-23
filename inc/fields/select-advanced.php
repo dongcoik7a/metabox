@@ -7,7 +7,7 @@ class RWMB_Select_Advanced_Field extends RWMB_Select_Field
 	/**
 	 * Enqueue scripts and styles
 	 */
-	public static function admin_enqueue_scripts()
+	public function admin_enqueue_scripts()
 	{
 		parent::admin_enqueue_scripts();
 		wp_enqueue_style( 'rwmb-select2', RWMB_CSS_URL . 'select2/select2.css', array(), '4.0.1' );

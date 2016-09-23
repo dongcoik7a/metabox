@@ -9,18 +9,16 @@ class RWMB_Map_Field extends RWMB_Field
 	 *
 	 * @return void
 	 */
-	static function admin_enqueue_scripts()
+	function admin_enqueue_scripts()
 	{
-        /**
-         * Since June 2016, Google Maps requires a valid API key.
-         * @link http://googlegeodevelopers.blogspot.com/2016/06/building-for-scale-updates-to-google.html
-         * @link https://developers.google.com/maps/documentation/javascript/get-api-key
-         */
-        $args = func_get_args();
-        $field = $args[0];
-        $google_maps_url = add_query_arg( 'key', $field['api_key'], 'https://maps.google.com/maps/api/js' );
+    /**
+     * Since June 2016, Google Maps requires a valid API key.
+     * @link http://googlegeodevelopers.blogspot.com/2016/06/building-for-scale-updates-to-google.html
+     * @link https://developers.google.com/maps/documentation/javascript/get-api-key
+     */
+    $google_maps_url = add_query_arg( 'key', $this->api_key, 'https://maps.google.com/maps/api/js' );
 
-        /**
+    /**
 		 * Allows developers load more libraries via a filter.
 		 * @link https://developers.google.com/maps/documentation/javascript/libraries
 		 */

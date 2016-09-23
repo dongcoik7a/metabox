@@ -32,6 +32,14 @@ abstract class RWMB_Field
 		return isset( $this->field[ $name ] ) ? $this->field[ $name ] : null;
 	}
 
+	function __set( $name, $value )
+	{
+		if( isset( $this->field[ $name ] ) )
+		{
+			$this->field[ $name ] = $value;
+		}
+	}
+
 	/**
 	 * Create and register field object
 	 * Takes field arguments, creates a field object, then caches and returns object
@@ -50,14 +58,14 @@ abstract class RWMB_Field
 	/**
 	 * Add actions
 	 */
-	public static function add_actions()
+	public function add_actions()
 	{
 	}
 
 	/**
 	 * Enqueue scripts and styles
 	 */
-	public static function admin_enqueue_scripts()
+	public function admin_enqueue_scripts()
 	{
 	}
 

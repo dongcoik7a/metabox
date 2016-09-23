@@ -21,7 +21,7 @@ if ( ! function_exists( 'rwmb_meta' ) )
 		 * If meta boxes is registered in the backend only, we can't get field's params
 		 * This is for backward compatibility with version < 4.8.0
 		 */
-		$field = RWMB_Field::find_field( $key );
+		$field = RWMB_Helper::find_field( $key, $post_id );
 
 		/*
 		 * If field is not found, which can caused by registering meta boxes for the backend only or conditional registration
@@ -53,7 +53,7 @@ if ( ! function_exists( 'rwmb_get_value' ) )
 	function rwmb_get_value( $field_id, $args = array(), $post_id = null )
 	{
 		$args  = wp_parse_args( $args );
-		$field = RWMB_Field::find_field( $field_id );
+		$field = RWMB_Helper::find_field( $field_id, $post_id );
 
 		// Get field value
 		$value = $field ? $field->get_value( $args, $post_id ) : false;
@@ -88,7 +88,7 @@ if ( ! function_exists( 'rwmb_the_value' ) )
 	function rwmb_the_value( $field_id, $args = array(), $post_id = null, $echo = true )
 	{
 		$args  = wp_parse_args( $args );
-		$field = RWMB_Field::find_field( $field_id );
+		$field = RWMB_Helper::find_field( $field_id, $post_id );;
 
 		if ( ! $field )
 			return '';

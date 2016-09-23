@@ -9,7 +9,7 @@ class RWMB_Slider_Field extends RWMB_Field
 	 *
 	 * @return void
 	 */
-	static function admin_enqueue_scripts()
+	function admin_enqueue_scripts()
 	{
 		$url = RWMB_CSS_URL . 'jqueryui';
 		wp_enqueue_style( 'jquery-ui-core', "{$url}/jquery.ui.core.css", array(), '1.8.17' );
@@ -28,7 +28,7 @@ class RWMB_Slider_Field extends RWMB_Field
 	 * @return string
 	 */
 	public function html( $meta )
-	{		
+	{
 		return sprintf(
 			'<div class="clearfix">
 				<div class="rwmb-slider" id="%s" data-options="%s"></div>

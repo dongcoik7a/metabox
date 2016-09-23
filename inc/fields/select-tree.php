@@ -22,7 +22,7 @@ class RWMB_Select_Tree_Field extends RWMB_Select_Field
 	/**
 	 * Enqueue scripts and styles
 	 */
-	public static function admin_enqueue_scripts()
+	public function admin_enqueue_scripts()
 	{
 		parent::admin_enqueue_scripts();
 		wp_enqueue_style( 'rwmb-select-tree', RWMB_CSS_URL . 'select-tree.css', array( 'rwmb-select' ), RWMB_VER );
@@ -52,9 +52,9 @@ class RWMB_Select_Tree_Field extends RWMB_Select_Field
 	 *
 	 * @return array
 	 */
-	public static function get_attributes( $field, $value = null )
+	public static function get_attributes( $value = null )
 	{
-		$attributes             = parent::get_attributes( $field, $value );
+		$attributes             = parent::get_attributes( $value );
 		$attributes['multiple'] = false;
 		$attributes['id']       = false;
 

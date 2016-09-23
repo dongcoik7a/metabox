@@ -10,7 +10,7 @@ class RWMB_File_Input_Field extends RWMB_Field
 	 *
 	 * @return void
 	 */
-	static function admin_enqueue_scripts()
+	function admin_enqueue_scripts()
 	{
 		wp_enqueue_media();
 		wp_enqueue_script( 'rwmb-file-input', RWMB_JS_URL . 'file-input.js', array( 'jquery' ), RWMB_VER, true );
