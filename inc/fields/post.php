@@ -93,10 +93,10 @@ class RWMB_Post_Field extends RWMB_Object_Choice_Field
 		$options = array();
 		foreach( $query->posts as $post )
 		{
-			$options[ $post->ID ] = array(
+			$options[ $post->ID ] = (object) array(
 				'parent' => $post->post_parent,
 				'value'  => $post->ID,
-				'label'  => $post->title
+				'label'  => $post->post_title
 			);
 		}
 

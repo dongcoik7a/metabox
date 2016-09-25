@@ -55,4 +55,15 @@ class RWMB_Input_List_Field extends RWMB_Choice_Field
 
 		return $field;
 	}
+
+	public function get_attributes( $value = null )
+	{
+		$attributes = parent::get_attributes( $value );
+		$attributes = wp_parse_args( array(
+			'id'    => false,
+			'type'  => $this->multiple ? 'checkbox' : 'radio',
+			'value' => $value
+		), $attributes );
+		return $attributes;
+	}
 }

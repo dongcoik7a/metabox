@@ -30,14 +30,14 @@ class RWMB_Image_Advanced_Field extends RWMB_Media_Field
 
 	/**
 	 * Get the field value.
-	 * @param array $field
 	 * @param array $args
 	 * @param null  $post_id
 	 * @return mixed
 	 */
-	static function get_value( $field, $args = array(), $post_id = null )
+	function get_value( $args = array(), $post_id = null )
 	{
-		return RWMB_Image_Field::get_value( $field, $args, $post_id );
+		$field = new RWMB_Image_Field( $this->field );
+		return $field->get_value( $args, $post_id );
 	}
 
 	/**
@@ -54,24 +54,24 @@ class RWMB_Image_Advanced_Field extends RWMB_Media_Field
 
 	/**
 	 * Format value for the helper functions.
-	 * @param array        $field Field parameter
 	 * @param string|array $value The field meta value
 	 * @return string
 	 */
-	public static function format_value( $field, $value )
+	public function format_value( $value )
 	{
-		return RWMB_Image_Field::format_value( $field, $value );
+		$field = new RWMB_Image_Field( $this->field );
+		return $field->format_value( $value );
 	}
 
 	/**
 	 * Format a single value for the helper functions.
-	 * @param array $field Field parameter
 	 * @param array $value The value
 	 * @return string
 	 */
-	public static function format_single_value( $field, $value )
+	public function format_single_value( $value )
 	{
-		return RWMB_Image_Field::format_single_value( $field, $value );
+		$field = new RWMB_Image_Field( $this->field );
+		return $field->format_single_value( $value );
 	}
 
 	/**

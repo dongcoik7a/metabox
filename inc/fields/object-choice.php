@@ -59,10 +59,9 @@ abstract class RWMB_Object_Choice_Field extends RWMB_Choice_Field
 	 */
 	public function admin_enqueue_scripts()
 	{
-		RWMB_Input_List_Field::admin_enqueue_scripts();
-		RWMB_Select_Field::admin_enqueue_scripts();
-		RWMB_Select_Tree_Field::admin_enqueue_scripts();
-		RWMB_Select_Advanced_Field::admin_enqueue_scripts();
+		$class_name      = $this-> get_type_class();
+		$field           = new $class_name( $this->field );
+		$field->admin_enqueue_scripts();
 	}
 
 	/**
@@ -71,10 +70,10 @@ abstract class RWMB_Object_Choice_Field extends RWMB_Choice_Field
 	 */
 	protected function get_type_class()
 	{
-		if ( in_array( $field->field_type, array( 'checkbox_list', 'radio_list' ) ) )
+		if ( in_array( $this->field_type, array( 'checkbox_list', 'radio_list' ) ) )
 		{
 			return 'RWMB_Input_List_Field';
 		}
-		return self::get_class_name( $field->field_type );
+		return self::get_class_name( $this->field_type );
 	}
 }

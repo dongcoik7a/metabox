@@ -3,7 +3,7 @@
 /**
  * Abstract input field class which is used for all <input> fields.
  */
-abstract class RWMB_Input_Field extends RWMB_Field
+class RWMB_Input_Field extends RWMB_Field
 {
 	/**
 	 * Get field HTML
@@ -14,7 +14,7 @@ abstract class RWMB_Input_Field extends RWMB_Field
 	public function html( $meta )
 	{
 		$attributes = $this->get_attributes( $meta );
-		return sprintf( '<input %s>%s', self::render_attributes( $attributes ), s$this->datalist() );
+		return sprintf( '<input %s>%s', self::render_attributes( $attributes ), $this->datalist() );
 	}
 
 	/**

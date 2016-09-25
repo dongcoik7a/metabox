@@ -11,7 +11,7 @@ class RWMB_Textarea_Field extends RWMB_Field
 	 *
 	 * @return string
 	 */
-	static function html( $meta )
+	function html( $meta )
 	{
 		$attributes = $this->get_attributes( $meta );
 		return sprintf(

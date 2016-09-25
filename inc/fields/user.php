@@ -57,11 +57,12 @@ class RWMB_User_Field extends RWMB_Object_Choice_Field
 		$options = array();
 		foreach( $query->get_results() as $user )
 		{
-			$options[ $user->ID ] = array(
+			$options[ $user->ID ] = (object) array(
 				'parent' => 0,
 				'value'  => $user->ID,
 				'label'  => $user->display_name
 			);
+		}
 		return $options;
 	}
 

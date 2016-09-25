@@ -94,7 +94,7 @@ class RWMB_Datetime_Field extends RWMB_Text_Field
 		if ( $this->timestamp )
 		{
 			$name  = $this->field_name;
-			$field = wp_parse_args( array( 'field_name' => $name . '[formatted]' ), $field );
+			$field = new RWMB_Text_Field( wp_parse_args( array( 'field_name' => $name . '[formatted]' ), $this->field ) );
 			$output .= sprintf(
 				'<input type="hidden" name="%s" class="rwmb-datetime-timestamp" value="%s">',
 				esc_attr( $name . '[timestamp]' ),
@@ -103,7 +103,7 @@ class RWMB_Datetime_Field extends RWMB_Text_Field
 			$meta = isset( $meta['formatted'] ) ? $meta['formatted'] : '';
 		}
 
-		$output .= parent::html( $meta );
+		$output .= isset( $field ) ? $field->html( $meta ) : parent::html( $meta );
 
 		if ( $this->inline )
 		{

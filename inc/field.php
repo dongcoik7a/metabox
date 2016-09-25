@@ -40,6 +40,12 @@ abstract class RWMB_Field
 		}
 	}
 
+	function __isset( $name )
+	{
+		return isset( $this->field[ $name ] );
+
+	}
+
 	/**
 	 * Create and register field object
 	 * Takes field arguments, creates a field object, then caches and returns object
@@ -50,7 +56,7 @@ abstract class RWMB_Field
 	 */
 	public static function create( $args )
 	{
-		$type       = isset( $args['type'] ) : $args['type'] : null;
+		$type       = isset( $args['type'] ) ? $args['type'] : null;
 		$class_name = self::get_class_name( $type );
 		return new $class_name( $args );
 	}
@@ -240,7 +246,7 @@ abstract class RWMB_Field
 	 *
 	 * @return mixed
 	 */
-	public static function esc_meta( $meta )
+	public function esc_meta( $meta )
 	{
 		return is_array( $meta ) ? array_map( __METHOD__, $meta ) : esc_attr( $meta );
 	}
@@ -486,21 +492,20 @@ abstract class RWMB_Field
 	 * @param array $field Field array
 	 * @return string Field class name
 	 */
-	public static function get_class_name( $field )
+	public static function get_class_name( $type )
 	{
-		$type = $field['type'];
-		if ( 'file_advanced' == $field['type'] )
+		if ( 'file_advanced' == $type)
 		{
 			$type = 'media';
 		}
-		if ( 'plupload_image' == $field['type'] )
+		if ( 'plupload_image' == $type )
 		{
 			$type = 'image_upload';
 		}
 		$type  = str_replace( array( '-', '_' ), ' ', $type );
 		$class = 'RWMB_' . ucwords( $type ) . '_Field';
 		$class = str_replace( ' ', '_', $class );
-		return class_exists( $class ) ? $class : 'RWMB_Input_Field';
+		return class_exists( $class ) ? $class : 'RWMB_Text_Field';
 	}
 
 	/**
@@ -523,11 +528,11 @@ abstract class RWMB_Field
 		// List of filters
 		$filters = array(
 			'rwmb_' . $name,
-			'rwmb_' . $field['type'] . '_' . $name,
+			'rwmb_' . $field->type. '_' . $name,
 		);
-		if ( isset( $field['id'] ) )
+		if ( isset( $field->id ) )
 		{
-			$filters[] = 'rwmb_' . $field['id'] . '_' . $name;
+			$filters[] = 'rwmb_' . $field->id . '_' . $name;
 		}
 
 		// Filter params: value, field, other params. Note: value is changed after each run.

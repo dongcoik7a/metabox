@@ -57,7 +57,7 @@ class RWMB_Media_Field extends RWMB_File_Field
 	{
 		$meta       = (array) $meta;
 		$meta       = implode( ',', $meta );
-		$attributes = self::get_attributes( $field, $meta );
+		$attributes = self::get_attributes( $meta );
 
 		$html = sprintf(
 			'<input %s>
@@ -102,9 +102,9 @@ class RWMB_Media_Field extends RWMB_File_Field
 	 *
 	 * @return array
 	 */
-	public function get_attributes( $field, $value = null )
+	public function get_attributes( $value = null )
 	{
-		$attributes         = parent::get_attributes( $field, $value );
+		$attributes         = parent::get_attributes( $value );
 		$attributes['type'] = 'hidden';
 		$attributes['name'] .= ! $this->clone && $this->multiple ? '[]' : '';
 		$attributes['disabled'] = true;

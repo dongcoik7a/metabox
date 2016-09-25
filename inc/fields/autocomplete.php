@@ -31,7 +31,7 @@ class RWMB_Autocomplete_Field extends RWMB_Multiple_Values_Field
 	 * @param array $field
 	 * @return string
 	 */
-	static function html( $meta, $field )
+	function html( $meta )
 	{
 		if ( ! is_array( $meta ) )
 			$meta = array( $meta );

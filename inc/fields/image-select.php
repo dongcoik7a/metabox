@@ -18,22 +18,21 @@ class RWMB_Image_Select_Field extends RWMB_Field
 	 * Get field HTML
 	 *
 	 * @param mixed $meta
-	 * @param array $field
 	 * @return string
 	 */
-	static function html( $meta, $field )
+	public function html( $meta )
 	{
 		$html = array();
 		$tpl  = '<label class="rwmb-image-select"><img src="%s"><input type="%s" class="rwmb-image_select hidden" name="%s" value="%s"%s></label>';
 
 		$meta = (array) $meta;
-		foreach ( $field['options'] as $value => $image )
+		foreach ( $this->options as $value => $image )
 		{
 			$html[] = sprintf(
 				$tpl,
 				$image,
-				$field['multiple'] ? 'checkbox' : 'radio',
-				$field['field_name'],
+				$this->multiple ? 'checkbox' : 'radio',
+				$this->field_name,
 				$value,
 				checked( in_array( $value, $meta ), true, false )
 			);
@@ -58,12 +57,11 @@ class RWMB_Image_Select_Field extends RWMB_Field
 
 	/**
 	 * Format a single value for the helper functions.
-	 * @param array  $field Field parameter
 	 * @param string $value The value
 	 * @return string
 	 */
-	static function format_single_value( $field, $value )
+	public function format_single_value( $value )
 	{
-		return sprintf( '<img src="%s">', esc_url( $field['options'][$value] ) );
+		return sprintf( '<img src="%s">', esc_url( $this->options[$value] ) );
 	}
 }

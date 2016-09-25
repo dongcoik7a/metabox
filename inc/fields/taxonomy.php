@@ -74,7 +74,7 @@ class RWMB_Taxonomy_Field extends RWMB_Object_Choice_Field
 
 		foreach( $terms as $term )
 		{
-			$options[ $term->term_id ] = array(
+			$options[ $term->term_id ] = (object) array(
 				'parent' => $term->parent,
 				'value'  => $term->term_id,
 				'label'  => $term->name

@@ -41,7 +41,7 @@ abstract class RWMB_Choice_Field extends RWMB_Field
 	 */
 	public static function normalize( $field )
 	{
-		$field = $field['multiple'] ? RWMB_Multiple_Values_Field::normalize( $field ) : RWMB_Field::normalize( $field ) ;
+		$field = isset( $field['multiple'] ) && $field['multiple']  ? RWMB_Multiple_Values_Field::normalize( $field ) : RWMB_Field::normalize( $field ) ;
 		$field = wp_parse_args( $field, array(
 			'flatten' => true,
 			'options' => array(),
@@ -74,9 +74,10 @@ abstract class RWMB_Choice_Field extends RWMB_Field
 		$options = array();
 		foreach ( (array) $this->options as $value => $label )
 		{
-			$option = is_array( $label ) ? $label : array( 'label' => (string) $label, 'value' => (string) $value );
-			if ( isset( $option['label'] ) && isset( $option['value'] ) )
-				$options[$option['value']] = (object) $option;
+			$option = is_array( $label ) || is_object( $label ) ? $label : array( 'label' => (string) $label, 'value' => (string) $value );
+			$option = (object) $option;
+			if ( isset( $option->label) && isset( $option->value) )
+				$options[$option->value] = $option;
 		}
 		return $options;
 	}
