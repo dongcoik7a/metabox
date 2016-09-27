@@ -13,7 +13,7 @@ abstract class RWMB_Object_Choice_Field extends RWMB_Choice_Field
 	 */
 	public function html( $meta )
 	{
-		$class_name      = $this-> get_type_class();
+		$class_name      = $this->get_type_class();
 		$options         = $this->get_options();
 		$options         = $this->filter_options( $options );
 		$args            = $this->field;
@@ -51,6 +51,8 @@ abstract class RWMB_Object_Choice_Field extends RWMB_Choice_Field
 			$field['multiple'] = true;
 		}
 
+		$classes = array_merge( array_filter( (array) $field['class'] ), array( "rwmb-{$field['field_type']}" ) );
+		$field['class'] = implode( ' ', $classes );
 		return $field;
 	}
 
