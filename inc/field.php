@@ -360,10 +360,11 @@ abstract class RWMB_Field
 	 */
 	public function get_attributes( $value = null )
 	{
+		$classes = array_merge( array_filter( (array) $this->class ), array( "rwmb-{$this->type}" ) );
 		$attributes = wp_parse_args( $this->attributes, array(
 			'disabled' => $this->disabled,
 			'required' => $this->required,
-			'class'    => "rwmb-{$this->type}",
+			'class'    => implode( ' ', $classes ),
 			'id'       => $this->id,
 			'name'     => $this->field_name,
 		) );
