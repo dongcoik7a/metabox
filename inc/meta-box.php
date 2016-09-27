@@ -205,9 +205,9 @@ class RW_Meta_Box
 			else
 			{
 				$new = $field->value( $new, $old, $post_id );
-				$new = RWMB_Field::filter( 'sanitize', $new, $field );
+				$new = $field->filter( 'sanitize', $new );
 			}
-			$new = RWMB_Field::filter( 'value', $new, $field, $old );
+			$new = $field->filter( 'value', $new, $old );
 
 			// Call defined method to save meta value, if there's no methods, call common one
 			$field->save( $new, $old, $post_id );

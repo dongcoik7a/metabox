@@ -91,10 +91,10 @@ abstract class RWMB_Field
 		$post_id = isset( $post->ID ) ? $post->ID : 0;
 
 		$meta = $this->meta( $post_id, $saved );
-		$meta = self::filter( 'field_meta', $meta, $this, $saved );
+		$meta = $this->filter( 'field_meta', $meta, $saved );
 
 		$begin = $this->begin_html( $meta );
-		$begin = self::filter( 'begin_html', $begin, $this, $meta );
+		$begin = $this->filter( 'begin_html', $begin, $meta );
 
 		// Separate code for cloneable and non-cloneable fields to make easy to maintain
 
@@ -108,13 +108,13 @@ abstract class RWMB_Field
 		{
 			// Call separated methods for displaying each type of field
 			$field_html = $this->html( $meta );
-			$field_html = self::filter( 'html', $field_html, $this, $meta );
+			$field_html = $this->filter( 'html', $field_html, $meta );
 		}
 
 		$end = $this->end_html( $meta );
-		$end = self::filter( 'end_html', $end, $this, $meta );
+		$end = $this->filter( 'end_html', $end, $meta );
 
-		$html = self::filter( 'wrapper_html', "$begin$field_html$end", $this, $meta );
+		$html = $this->filter( 'wrapper_html', "$begin$field_html$end", $meta );
 
 		// Display label and input in DIV and allow user-defined classes to be appended
 		$classes = "rwmb-field rwmb-{$this->type}-wrapper " . $this->class;
@@ -128,7 +128,7 @@ abstract class RWMB_Field
 			trim( $classes ),
 			$html
 		);
-		$outer_html = self::filter( 'outer_html', $outer_html, $this, $meta );
+		$outer_html = $this->filter( 'outer_html', $outer_html, $meta );
 
 		echo $outer_html;
 	}
@@ -517,14 +517,14 @@ abstract class RWMB_Field
 	 * - rwmb_{$field['id']}_{$name}
 	 * @return mixed
 	 */
-	public static function filter()
+	public function filter()
 	{
 		$args = func_get_args();
 
 		// 3 first params must be: filter name, value, field. Other params will be used for filters.
 		$name  = array_shift( $args );
 		$value = array_shift( $args );
-		$field = array_shift( $args );
+		$field = $this;
 
 		// List of filters
 		$filters = array(
