@@ -51,10 +51,11 @@ class RWMB_Input_Field extends RWMB_Field
 		$attributes = wp_parse_args( $attributes, array(
 			'list'        => $this->datalist ? $this->datalist['id'] : false,
 			'readonly'    => $this->readonly,
-			'value'       => $value,
 			'placeholder' => $this->placeholder,
 			'type'        => $this->type,
 		) );
+
+		$attributes['value'] = $value;
 
 		return $attributes;
 	}
