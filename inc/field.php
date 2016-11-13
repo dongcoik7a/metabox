@@ -250,9 +250,10 @@ abstract class RWMB_Field {
 	public static function save( $new, $old, $post_id, $field ) {
 		$name = $field['id'];
 
+		delete_post_meta( $post_id, $name );
+
 		// Remove post meta if it's empty
 		if ( '' === $new || array() === $new ) {
-			delete_post_meta( $post_id, $name );
 			return;
 		}
 
@@ -273,13 +274,9 @@ abstract class RWMB_Field {
 
 		// If field is multiple, value is saved as multiple entries in the database (WordPress behaviour)
 		if ( $field['multiple'] ) {
-			$new_values = array_diff( $new, $old );
-			foreach ( $new_values as $new_value ) {
-				add_post_meta( $post_id, $name, $new_value, false );
-			}
-			$old_values = array_diff( $old, $new );
-			foreach ( $old_values as $old_value ) {
-				delete_post_meta( $post_id, $name, $old_value );
+			$new = (array) $new;
+			foreach ( $new as $n ) {
+				add_post_meta( $post_id, $name, $n, false );
 			}
 			return;
 		}
